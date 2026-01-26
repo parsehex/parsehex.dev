@@ -1,5 +1,5 @@
 @use "mixins";
-@import "colors.scss"; 
+@use "colors.scss";
 
 @font-face {
   font-family: "Prompt";
@@ -13,7 +13,7 @@
 }
 @font-face {
   font-family: "Prompt Bold";
-  src: url("/src/assets/fonts/PromptBold.ttf"); 
+  src: url("/src/assets/fonts/PromptBold.ttf");
 }
 
 h1 {
