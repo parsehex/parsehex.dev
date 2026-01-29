@@ -7,7 +7,12 @@
     "dev": "astro dev --host",
     "start": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "new": "vite-node scripts/new.ts",
+    "inbox": "vite-node scripts/inbox.ts",
+    "think": "vite-node scripts/think.ts",
+    "now:mac": "node --print \"Date.now()\" | tr -d '[:space:]' | pbcopy",
+    "now:win": "node --print \"Date.now()\" | % { $_.Trim() } | clip"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.13",
