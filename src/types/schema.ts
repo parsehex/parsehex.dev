@@ -41,6 +41,9 @@ export const Thing = z.object({
 	notes: z.string().optional(),
 	/** Main place where somebody can go to learn about this Thing. */
 	url: z.string().optional(),
+	// TODO: `external_id` (e.g. "tmdb:123456")
+	//   used for populating page content (e.g. poster for movie/show)
+	//   (would be saved in temp/git-ignored folder)
 	created: z.coerce.number(),
 	updated: z.coerce.number().optional(),
 	tags: z.array(z.string()).optional(),
