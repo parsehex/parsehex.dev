@@ -1,5 +1,6 @@
 import { defineCollection, render } from 'astro:content';
 import { glob } from 'astro/loaders';
+import { Thing, Person, Project } from './types/schema';
 
 const movies = defineCollection({
 	loader: glob({ pattern: ['*.mdx'], base: 'src/content/movies' }),
@@ -23,4 +24,3 @@ const tools = defineCollection({
 });
 
 export const collections = { movies, people, projects, shows, tools };
-
