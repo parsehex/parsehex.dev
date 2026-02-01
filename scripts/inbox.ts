@@ -19,6 +19,7 @@ import { titleToSlug } from '../src/utils';
 //   of course, if the thing is in the inbox then use the inbox version
 
 // TODO: allow typing from the start as way to filter Things in inbox
+// TODO: 		same for `think`
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
