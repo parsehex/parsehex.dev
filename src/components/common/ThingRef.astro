@@ -1,0 +1,81 @@
+---
+import type { z } from 'astro/zod';
+import { ThingRef as ThingRefSchema } from '@/types/schema';
+import { getCollection } from 'astro:content';
+import { slugToTitle } from '@/utils';
+
+interface Props {
+	ref: z.infer<typeof ThingRefSchema>;
+}
+
+const { ref } = Astro.props;
+
+function parseFullId(fullId: string): { type: string; slug: string } | null {
+	if (fullId.includes(':')) {
+		const [type, slug] = fullId.split(':');
+		return { type, slug };
+	}
+	return null;
+}
+
+const parsed = parseFullId(ref.full_id);
+let displayTitle = ref.full_id;
+let pageExists = false;
+
+if (parsed) {
+	try {
+		const collection = await getCollection(parsed.type as any);
+		const thing: any = collection.find((item: any) => {
+			const itemSlug = item.id.replace(/\.mdx$/, '');
+			return itemSlug === parsed.slug;
+		});
+
+		if (thing && thing.data) {
+			pageExists = true;
+			displayTitle = thing.data.title;
+		} else {
+			displayTitle = slugToTitle(parsed.slug) || parsed.slug;
+		}
+	} catch (error) {
+		displayTitle = slugToTitle(parsed.slug) || parsed.slug;
+	}
+}
+---
+
+{parsed && pageExists ? (
+	<span>
+		{ref.desc && <span class="ref-desc">{ref.desc} </span>}
+		<a href={`/${parsed.type}/${parsed.slug}`} class="thing-link">
+			{displayTitle}
+		</a>
+	</span>
+) : (
+	<span>
+		{ref.desc && <span class="ref-desc">{ref.desc} </span>}
+		<span class="thing-text">{displayTitle}</span>
+	</span>
+)}
+
+<style>
+	.ref-desc {
+		color: #666;
+		font-size: 0.85em;
+		margin-right: 7px;
+	}
+
+	.thing-link {
+		color: hsl(171, 100%, 41%);
+		text-decoration: none;
+		font-weight: 600;
+		line-height: 1.2em;
+		text-underline-offset: 3px;
+	}
+
+	.thing-link:hover {
+		text-decoration: underline;
+	}
+
+	.thing-text {
+		/* font-weight: 600; */
+	}
+</style>

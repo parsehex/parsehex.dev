@@ -3,10 +3,11 @@ import { getCollection } from 'astro:content';
 import { render } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { collections } from '@/content.config';
+import ThingRef from '@/components/common/ThingRef.astro';
+import ThoughtsList from '@/components/common/ThoughtsList.astro';
 
 export async function getStaticPaths() {
 	const availTypes = Object.keys(collections);
-	// TODO: simplify / make cleaner
 	const things = (
 		await Promise.all(availTypes.map((t) => getCollection(t as any)))
 	).map((v, i) => [availTypes[i], v]);
@@ -24,6 +25,16 @@ export async function getStaticPaths() {
 const { type } = Astro.params;
 const { thing } = Astro.props;
 const { Content } = await render(thing);
+
+function formatDate(timestamp?: number): string {
+	if (!timestamp) return '';
+	const date = new Date(timestamp * 1000);
+	return date.toLocaleDateString('en-US', {
+		year: 'numeric',
+		month: 'long',
+		day: 'numeric',
+	});
+}
 ---
 
 <BaseLayout pageTitle={thing.data.title} pageDescription={thing.data.summary}>
@@ -41,17 +52,166 @@ const { Content } = await render(thing);
 	-->
 	<section class="section">
 		<div class="container">
-			<div class="content">
-				<h2>{thing.data.title}</h2>
-				<Content />
+			<div class="content-wrapper">
+				<!-- Header Section -->
+				<header class="thing-header">
+					<h1 class="title is-1">{thing.data.title}</h1>
+
+					{thing.data.summary && (
+						<p class="subtitle is-4 has-text-grey-dark">{thing.data.summary}</p>
+					)}
+
+					<!-- Metadata Bar -->
+					<div class="metadata-bar">
+						{thing.data.created && (
+							<span class="metadata-item">
+								<strong>Created:</strong> {formatDate(thing.data.created)}
+							</span>
+						)}
+						{thing.data.updated && (
+							<span class="metadata-item">
+								<strong>Updated:</strong> {formatDate(thing.data.updated)}
+							</span>
+						)}
+						{thing.data.url && (
+							<span class="metadata-item">
+								<a href={thing.data.url} target="_blank" rel="noopener noreferrer" class="external-link">
+									Go to {thing.data.title} →
+								</a>
+							</span>
+						)}
+					</div>
+
+					<!-- Tags -->
+					{thing.data.tags && thing.data.tags.length > 0 && (
+						<div class="tags-section">
+							{thing.data.tags.map((tag: string) => (
+								<span class="tag is-primary is-medium">{tag}</span>
+							))}
+						</div>
+					)}
+				</header>
+
+				<!-- Main Content -->
+				{thing.data.notes && (
+					<div class="notes-section">
+						<h3 class="title is-4">Notes</h3>
+						<div class="notes-content">
+							<p>{thing.data.notes}</p>
+						</div>
+					</div>
+				)}
+
+				<!-- MDX Content -->
+				<div class="mdx-content">
+					<Content />
+				</div>
+
+				<!-- Thoughts -->
+				<ThoughtsList thoughts={thing.data.thoughts} />
+
+				<!-- References -->
+				{thing.data.references && thing.data.references.length > 0 && (
+					<div class="references-section">
+						<h3 class="title is-4">References</h3>
+						<ul class="references-list">
+							{thing.data.references.map((ref: any) => (
+								<li class="reference-item">
+									<ThingRef ref={ref} />
+								</li>
+							))}
+						</ul>
+					</div>
+				)}
 			</div>
 		</div>
 	</section>
 </BaseLayout>
 
 <style>
-	.content {
+	.content-wrapper {
 		max-width: 800px;
 		margin: 0 auto;
+	}
+
+	.thing-header {
+		margin-bottom: 2rem;
+		padding-bottom: 1.5rem;
+		border-bottom: 2px solid #f0f0f0;
+	}
+
+	.metadata-bar {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1.5rem;
+		margin-top: 1rem;
+		font-size: 0.9rem;
+		color: #666;
+	}
+
+	.metadata-item {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.external-link {
+		color: hsl(171, 100%, 41%);
+		text-decoration: none;
+		font-weight: 600;
+	}
+
+	.external-link:hover {
+		text-decoration: underline;
+	}
+
+	.tags-section {
+		margin-top: 1rem;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
+	.notes-section {
+		margin-top: 2rem;
+		padding: 1.5rem;
+		background: #f9f9f9;
+		border-radius: 8px;
+	}
+
+	.notes-content {
+		margin-top: 0.5rem;
+		line-height: 1.6;
+	}
+
+	.mdx-content {
+		margin-top: 2rem;
+		line-height: 1.7;
+	}
+
+	.references-section {
+		margin-top: 2rem;
+	}
+
+	.references-list {
+		list-style: none;
+		padding-left: 0;
+		margin-top: 1rem;
+	}
+
+	.reference-item {
+		padding: 0.75rem 0;
+		border-bottom: 1px solid #f0f0f0;
+	}
+
+	.reference-item:last-child {
+		border-bottom: none;
+	}
+
+	@media screen and (max-width: 768px) {
+		.metadata-bar {
+			flex-direction: column;
+			gap: 0.5rem;
+		}
 	}
 </style>

@@ -1,0 +1,95 @@
+---
+interface Props {
+	thoughts?: Record<string, any>[];
+}
+
+const { thoughts } = Astro.props;
+
+function formatTimestamp(timestamp: string | number): string {
+	const date = new Date(Number(timestamp) * 1000);
+	return date.toLocaleDateString('en-US', {
+		year: 'numeric',
+		month: 'short',
+		day: 'numeric',
+	});
+}
+
+function extractThoughts(thoughtsArray?: Record<string, any>[]): Array<{ timestamp: string; content: any }> {
+	if (!thoughtsArray) return [];
+
+	const result: Array<{ timestamp: string; content: any }> = [];
+
+	for (const thought of thoughtsArray) {
+		const entries = Object.entries(thought);
+		for (const [key, value] of entries) {
+			if (!isNaN(Number(key))) {
+				result.push({ timestamp: key, content: value });
+			}
+		}
+	}
+
+	return result;
+}
+
+const thoughtsList = extractThoughts(thoughts);
+---
+
+{thoughtsList.length > 0 && (
+	<div class="thoughts-section">
+		<h3 class="title is-4">Thoughts</h3>
+		<div class="thoughts-list">
+			{thoughtsList.map(({ timestamp, content }) => (
+				<div class="thought-item">
+					<time class="thought-date">{formatTimestamp(timestamp)}</time>
+					<div class="thought-content">
+						{typeof content === 'string' ? (
+							<p>{content}</p>
+						) : typeof content === 'object' ? (
+							Object.entries(content).map(([key, val]) => (
+								<div>
+									<strong>{key}:</strong> {String(val)}
+								</div>
+							))
+						) : (
+							<p>{String(content)}</p>
+						)}
+					</div>
+				</div>
+			))}
+		</div>
+	</div>
+)}
+
+<style>
+	.thoughts-section {
+		margin-top: 2rem;
+	}
+
+	.thoughts-list {
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+	}
+
+	.thought-item {
+		padding: 1rem;
+		background: #f9f9f9;
+		border-left: 4px solid hsl(171, 100%, 41%);
+		border-radius: 4px;
+	}
+
+	.thought-date {
+		display: block;
+		font-size: 0.875rem;
+		color: #666;
+		margin-bottom: 0.5rem;
+	}
+
+	.thought-content {
+		color: #333;
+	}
+
+	.thought-content p {
+		margin: 0;
+	}
+</style>
