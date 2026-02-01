@@ -1,0 +1,14 @@
+# This file is meant to supplement the content types, which don't have metadata of their own.
+# Example: `description` (and `name` if defined) should be used on the type's index page (at least the base, if not also a specific view(s) for that type)
+# Missing fields are allowed.
+
+movies:
+  # dont need to set `name` for single-word title
+  description: Moving pictures that I care about enough to remember
+# people:
+#   description:
+projects:
+  description: Projects of mine that are worth mentioning
+# shows:
+tools:
+  description: Stuff that I use but didn't create, which I find helpful

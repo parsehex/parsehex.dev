@@ -4,6 +4,13 @@ import menuOptions from '../../data/menu-options.json';
 // import SearchBoxOrama from './SearchBoxOrama.vue';
 // @ts-ignore
 import { localizePath } from 'astro-i18next';
+import { nonEmptyCollections } from '@/content.config';
+
+const availTypes = nonEmptyCollections;
+
+// I want part of the navbar to be a list of Thing types with content
+//   dynamic because of non-empty filter && use amount/recency of content to sort and/or style
+// Eventually I expect to start having pages where the page is the content, which I would/will place outside the above list.
 ---
 
 <nav class="navbar" role="navigation" aria-label="main navigation">
@@ -29,13 +36,10 @@ import { localizePath } from 'astro-i18next';
 	<div id="navbar-id" class="navbar-menu mt-4 mb-2">
 		<div class="navbar-end mr-4">
 			{
-				menuOptions.map((option) => {
+				availTypes.map((option) => {
 					return (
-						<a
-							href={localizePath(option.url)}
-							class="navbar-item f-600 tertiary-color "
-						>
-							{option.label}
+						<a href={'/' + option} class="navbar-item f-600 tertiary-color ">
+							{option.toUpperCase()}
 						</a>
 					);
 				})

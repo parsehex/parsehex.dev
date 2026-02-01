@@ -1,4 +1,4 @@
-import { defineCollection, render } from 'astro:content';
+import { defineCollection, getCollection, render } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { Thing, Person, Project } from './types/schema';
 
@@ -24,3 +24,9 @@ const tools = defineCollection({
 });
 
 export const collections = { movies, people, projects, shows, tools };
+export const nonEmptyCollections: string[] = [];
+
+for (const key of Object.keys(collections)) {
+	const collection = await getCollection(key as any);
+	if (collection.length > 0) nonEmptyCollections.push(key);
+}
