@@ -14,6 +14,10 @@ import { select, input, confirm, checkbox } from '@inquirer/prompts';
 import { spawn } from 'child_process';
 import { titleToSlug } from '../src/utils';
 
+// TODO: look through thing references within the content to find any un-linked
+//   should be displayed under "Uncategorized" or similar
+//   of course, if the thing is in the inbox then use the inbox version
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const argv = await yargs(hideBin(process.argv)).option('verbose', {
@@ -127,10 +131,10 @@ async function selectEntries(entries: InboxEntry[]): Promise<InboxEntry[]> {
 	return selectedIndices.map(index => entries[index]);
 }
 
-async function createContentFile(entry: InboxEntry, contentType: string): Promise<string> {
+async function createContentFile(entry: InboxEntry, contentType: string, category = ''): Promise<string> {
 	return new Promise((resolve, reject) => {
 		const slug = titleToSlug(entry.title);
-		const child = spawn('vite-node', ['scripts/new.ts', `${contentType}:${slug}`, entry.title], {
+		const child = spawn('vite-node', ['scripts/new.ts', `${contentType}:${slug}`, entry.title, category], {
 			stdio: 'pipe',
 		});
 
@@ -242,7 +246,7 @@ async function main() {
 				console.log(chalk.dim(`Creating: ${entry.title}`));
 
 				// Create content file using existing new.ts script
-				const result = await createContentFile(entry, contentType);
+				const result = await createContentFile(entry, contentType, selectedCategory.category);
 				console.log(chalk.green(`✓ Created: ${result}`));
 
 				// Remove entry from inbox file

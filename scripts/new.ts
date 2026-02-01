@@ -6,7 +6,8 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import yaml from 'yaml';
+import yaml, { parseDocument, Document } from 'yaml';
+import * as YAML from 'yaml';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import chalk from 'chalk';
@@ -26,6 +27,7 @@ const contentDir = path.resolve(__dirname, '../src/content');
 let type = '';
 let idSlug = '';
 let title = '';
+let tags = '';
 
 if (argv._.length > 0) {
 	const args = argv._ as string[];
@@ -37,6 +39,8 @@ if (argv._.length > 0) {
 	}
 
 	if (args[1]) title = args[1];
+
+	if (args[2]) tags = args[2];
 }
 
 if (argv.verbose) {
@@ -86,6 +90,8 @@ if (!idSlug) {
 	});
 }
 
+// TODO prompt for optional tags (reuse from think)
+
 const typeDir = path.join(contentDir, type);
 const dest = path.join(typeDir, idSlug + '.mdx');
 
@@ -105,16 +111,23 @@ if (exists && !argv.overwrite) {
 	}
 }
 
-const frontmatter = yaml.stringify({
+const doc = new Document({
 	title,
 	created: Math.floor(Date.now() / 1000),
-}).trim();
-const fileContent = `---
-${frontmatter}
----
+	tags: tags ? tags.split(',') : undefined,
+});
 
-# {frontmatter.title}\n`;
+// use single-line syntax for tags list:
+(doc.get('tags') as any).flow = true;
+
+const fileContent = `---
+${doc.toString({ flowCollectionPadding: false })}
+---\n`;
+
 
 await fs.writeFile(dest, fileContent, { encoding: 'utf-8' });
 
 console.log('Created:', dest);
+
+// TODO: we should look through thing references to find any un-linked that appear to be the newly created page
+//   if so, offer to update with full_id
