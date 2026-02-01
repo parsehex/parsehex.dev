@@ -1,4 +1,5 @@
 ---
+import Hero from '@/components/common/Hero.astro';
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getContentItems, groupByCategory } from "../utils/content-utils";
 
@@ -18,20 +19,13 @@ const projectsPreview = projects.slice(0, previewCount);
 
 <BaseLayout
   pageTitle="parsehex.dev"
-  pageDescription="A personal collection of things I find interesting"
+  pageDescription="A collection of things that are meaningful to me"
 >
-  <section class="hero is-medium is-primary">
-    <div class="hero-body">
-      <div class="container">
-        <h1 class="title is-1">
-          parsehex.dev
-        </h1>
-        <p class="subtitle is-4">
-          A personal collection of things I find interesting
-        </p>
-      </div>
-    </div>
-  </section>
+  <Hero
+		subtitle="A collection of things that are meaningful to me"
+		size="is-small"
+    primary
+	/>
 
   <section class="section">
     <div class="container">
@@ -147,10 +141,6 @@ const projectsPreview = projects.slice(0, previewCount);
 </BaseLayout>
 
 <style>
-  .hero.is-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  }
-
   .content-section {
     margin-bottom: 4rem;
   }

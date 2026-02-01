@@ -1,6 +1,7 @@
 ---
 import { collections } from '@/content.config';
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import Hero from '@/components/common/Hero.astro';
 import { camelToTitle } from '@/utils';
 import { getContentItems, groupByCategory } from '@/utils/content-utils';
 import { getCollection } from 'astro:content';
@@ -29,10 +30,16 @@ const grouped = groupByCategory(items);
 ---
 
 <BaseLayout pageTitle={camelToTitle(typeTitle)}>
+
+	<!-- TODO: use Hero slot for tags filter -->
+	<Hero
+		title={camelToTitle(typeTitle)}
+		subtitle={`Browse all ${typeTitle.toLowerCase()}`}
+		size="is-small"
+	/>
+
 	<section class="section">
 		<div class="container">
-			<h1 class="title is-1">{camelToTitle(typeTitle)}</h1>
-
 			<div class="content">
 				{
 					Array.from(grouped.entries()).map(([category, items]) => (

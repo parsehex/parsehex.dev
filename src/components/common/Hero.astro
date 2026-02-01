@@ -2,37 +2,60 @@
 import { type Size, type TextSize } from "../../types/components";
 
 export interface Props {
-  title: string;
+  title?: string;
   titleSize?: TextSize;
   titleSizeMobile?: TextSize;
-  subtitle: string;
+  subtitle?: string;
   subtitleSize?: TextSize;
   subtitleSizeMobile?: TextSize;
   size?: Size;
+  primary?: boolean;
 }
 
 const {
-  title,
+  title = '',
   titleSize = "is-size-3",
   titleSizeMobile = "is-size-4",
-  subtitle,
+  subtitle = '',
   subtitleSize = "is-size-5",
   subtitleSizeMobile = "is-size-6",
   size = "is-small",
+  primary = false,
 } = Astro.props;
 ---
 
-<section class:list={["hero", size]}>
+<section class:list={["hero", size, primary ? "is-primary" : ""]}>
   <div class="hero-body">
-    <h1
-      class:list={["title", titleSize, titleSizeMobile + "-mobile"]}
-      class="title"
-    >
-      {title}
-    </h1>
-    <p class:list={["subtitle", subtitleSize, subtitleSizeMobile + "-mobile"]}>
-      {subtitle}
-    </p>
+    {
+      title && (
+        <h1
+          class:list={["title",
+          titleSize, titleSizeMobile + "-mobile"]}
+        >
+          {title}
+        </h1>
+      )
+    }
+    {
+      subtitle && (
+        <p
+          class:list={["subtitle",
+          subtitleSize, subtitleSizeMobile + "-mobile"]}
+        >
+          {subtitle}
+        </p>
+      )
+    }
     <slot />
   </div>
 </section>
+
+<style>
+  .hero.is-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+  .hero.is-primary .subtitle {
+    color: white !important;
+    text-shadow: 0 0 10px rgb(0, 0, 0);
+  }
+</style>
