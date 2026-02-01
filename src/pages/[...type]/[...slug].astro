@@ -1,0 +1,57 @@
+---
+import { getCollection } from 'astro:content';
+import { render } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { collections } from '@/content.config';
+
+export async function getStaticPaths() {
+	const availTypes = Object.keys(collections);
+	// TODO: simplify / make cleaner
+	const things = (
+		await Promise.all(availTypes.map((t) => getCollection(t as any)))
+	).map((v, i) => [availTypes[i], v]);
+	const paths = things.map((resultArr: any[]) => {
+		const type = resultArr[0];
+		const collection = resultArr[1];
+		return collection.map((thing: any) => ({
+			params: { slug: thing.id.replace(/\.mdx$/, ''), type },
+			props: { thing },
+		}));
+	});
+	return paths.flat();
+}
+
+const { type } = Astro.params;
+const { thing } = Astro.props;
+const { Content } = await render(thing);
+---
+
+<BaseLayout pageTitle={thing.data.title} pageDescription={thing.data.summary}>
+	<!-- this page should be a general view for any Thing that doesn't already have a specific page for it -->
+	<!-- so this should be a good display of the Thing type from the schema, so:
+	 - metadata / url / etc
+	 - notes: should adapt to long or short content
+	 - thoughts
+	 - references: use full_id and desc to list relations to other things
+	 		e.g. `shows:house-of-cards-us` -> shows/house-of-cards-us
+			should be: `desc` as string + full_id -> link
+	 - tags
+
+	 since other types uses many / all of the above, i want to reuse as much as possible/reasonable
+	-->
+	<section class="section">
+		<div class="container">
+			<div class="content">
+				<h2>{thing.data.title}</h2>
+				<Content />
+			</div>
+		</div>
+	</section>
+</BaseLayout>
+
+<style>
+	.content {
+		max-width: 800px;
+		margin: 0 auto;
+	}
+</style>

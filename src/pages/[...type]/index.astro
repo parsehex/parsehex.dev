@@ -1,0 +1,116 @@
+---
+import { collections } from '@/content.config';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { camelToTitle } from '@/utils';
+import { getContentItems, groupByCategory } from '@/utils/content-utils';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+	const availTypes = Object.keys(collections);
+	// TODO: simplify / make cleaner
+	const allThings = (
+		await Promise.all(availTypes.map((t) => getCollection(t as any)))
+	).map((v, i) => [availTypes[i], v]);
+	const paths = allThings.map((resultArr: any[]) => {
+		const type = resultArr[0];
+		const things = resultArr[1];
+		return {
+			params: { type },
+			props: { things },
+		};
+	});
+	return paths.flat();
+}
+
+const { type } = Astro.params;
+const typeTitle = type[0].toUpperCase() + type.substring(1);
+const items = await getContentItems(type);
+const grouped = groupByCategory(items);
+---
+
+<BaseLayout pageTitle={camelToTitle(typeTitle)}>
+	<section class="section">
+		<div class="container">
+			<h1 class="title is-1">{camelToTitle(typeTitle)}</h1>
+
+			<div class="content">
+				{
+					Array.from(grouped.entries()).map(([category, items]) => (
+						<div class="category-section">
+							<h2 class="title is-3 has-text-primary">
+								{category
+									.replace(/-/g, ' ')
+									.replace(/\b\w/g, (l) => l.toUpperCase())}
+							</h2>
+							<ul class="thing-list">
+								{items.map((item) => (
+									<li class="thing-item">
+										{item.hasPage ? (
+											<a
+												href={`/${type}/${item.slug}`}
+												class="thing-title-link"
+											>
+												<span class="thing-title">{item.title}</span>
+											</a>
+										) : (
+											<span class="thing-title">{item.title}</span>
+										)}
+										{item.note && (
+											<span class="thing-note"> — {item.note}</span>
+										)}
+									</li>
+								))}
+							</ul>
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</section>
+</BaseLayout>
+
+<style>
+	.category-section {
+		margin-bottom: 3rem;
+	}
+
+	.thing-list {
+		list-style: none;
+		padding-left: 0;
+	}
+
+	.thing-item {
+		padding: 0.75rem 0;
+		border-bottom: 1px solid #f0f0f0;
+		transition: background-color 0.2s;
+	}
+
+	.thing-item:hover {
+		background-color: #f9f9f9;
+		padding-left: 1rem;
+	}
+
+	.thing-title-link {
+		text-decoration: none;
+		color: inherit;
+	}
+
+	.thing-title-link:hover .thing-title {
+		color: hsl(171, 100%, 41%);
+		text-decoration: underline;
+	}
+
+	.thing-title {
+		font-weight: 600;
+		font-size: 1.1rem;
+	}
+
+	.thing-note {
+		color: #666;
+		font-style: italic;
+	}
+
+	.content {
+		margin-top: 2rem;
+	}
+</style>
