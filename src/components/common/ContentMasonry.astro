@@ -1,0 +1,148 @@
+---
+interface Item {
+  title: string;
+  slug: string;
+  note?: string;
+  hasPage?: boolean;
+}
+
+interface Group {
+  title: string;
+  count: number;
+  viewAllLink?: string;
+  items: Item[];
+  type?: string;
+}
+
+interface Props {
+  groups: Group[];
+}
+
+const { groups } = Astro.props;
+---
+
+<div class="categories-masonry">
+  {
+    groups.map((group) => (
+      <div class="category-block">
+        <div class="category-header">
+          <h2 class="title is-4 has-text-primary mb-0">
+            {group.title}
+          </h2>
+          <span class="tag is-light is-rounded is-small ml-2 is-unselectable">
+            {group.count}
+          </span>
+          {group.viewAllLink && (
+             <a href={group.viewAllLink} class="view-all-link ml-auto is-size-7">View All →</a>
+          )}
+        </div>
+
+        <ul class="compact-list">
+          {group.items.map((item) => (
+            <li class="list-item">
+              {item.hasPage ? (
+                <a href={`/${group.type || 'things'}/${item.slug}`} class="item-link">
+                  <span class="item-title">{item.title}</span>
+                  {item.note && <span class="item-note"> — {item.note}</span>}
+                </a>
+              ) : (
+                <span class="item-wrapper">
+                  <span class="item-title">{item.title}</span>
+                  {item.note && <span class="item-note"> — {item.note}</span>}
+                </span>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+	.categories-masonry {
+		display: block;
+		width: 100%;
+		margin: 0 auto;
+		column-count: 1;
+		column-gap: 2rem;
+		column-fill: balance;
+	}
+
+	@media (min-width: 768px) {
+		.categories-masonry {
+			column-count: 2;
+		}
+	}
+
+	@media (min-width: 1024px) {
+		.categories-masonry {
+			column-count: 3;
+		}
+	}
+
+	.category-block {
+		break-inside: avoid;
+		margin-bottom: 2rem;
+		display: block;
+	}
+
+	.category-header {
+		display: flex;
+		align-items: center;
+		margin-bottom: 1rem;
+		padding-bottom: 0.5rem;
+		border-bottom: 2px solid #f5f5f5;
+	}
+
+    .view-all-link {
+        margin-left: auto;
+        color: hsl(171, 100%, 41%);
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .view-all-link:hover {
+        text-decoration: underline;
+    }
+
+	.compact-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	.list-item {
+		margin-bottom: 0.5rem;
+		font-size: 0.95rem;
+		line-height: 1.4;
+	}
+
+	.item-link {
+		text-decoration: underline;
+		text-underline-offset: 0.2rem;
+		color: #2c3e50;
+		transition: color 0.1s;
+	}
+
+	.item-link:hover {
+		color: hsl(171, 100%, 41%);
+	}
+
+	.item-title {
+		font-weight: 500;
+	}
+
+	.item-note,
+	.item-wrapper {
+		color: #666;
+	}
+
+	.item-note {
+		font-size: 0.9em;
+		font-style: italic;
+		opacity: 0.8;
+		display: block !important;
+		margin-left: 1rem !important;
+	}
+</style>

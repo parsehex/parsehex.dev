@@ -1,20 +1,31 @@
 ---
 import Hero from '@/components/common/Hero.astro';
-import BaseLayout from "../layouts/BaseLayout.astro";
-import { getContentItems, groupByCategory } from "../utils/content-utils";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import ContentMasonry from "@/components/common/ContentMasonry.astro";
+import { getContentItems } from "@/utils/content-utils";
+import { collections } from "@/content.config";
 
-// Fetch content from all collections
-const shows = await getContentItems('shows');
-const movies = await getContentItems('movies');
-const people = await getContentItems('people');
-const projects = await getContentItems('projects');
-
-// Get a preview of items (first 6 from each)
+// Dynamically fetch content groups
 const previewCount = 6;
-const showsPreview = shows.slice(0, previewCount);
-const moviesPreview = movies.slice(0, previewCount);
-const peoplePreview = people.slice(0, previewCount);
-const projectsPreview = projects.slice(0, previewCount);
+const collectionKeys = Object.keys(collections);
+
+const groups = await Promise.all(
+  collectionKeys.map(async (key) => {
+    const items = await getContentItems(key as any);
+    const title = key.charAt(0).toUpperCase() + key.slice(1);
+
+    return {
+      title,
+      count: items.length,
+      viewAllLink: `/${key}`,
+      items: items.slice(0, previewCount),
+      type: key
+    };
+  })
+);
+
+// Filter out empty groups if desired
+const nonEmptyGroups = groups.filter(g => g.count > 0);
 ---
 
 <BaseLayout
@@ -29,191 +40,7 @@ const projectsPreview = projects.slice(0, previewCount);
 
   <section class="section">
     <div class="container">
-      <!-- TV Shows -->
-      {showsPreview.length > 0 && (
-        <div class="content-section">
-          <div class="section-header">
-            <h2 class="title is-3">📺 TV Shows</h2>
-            <a href="/shows" class="view-all">View all {shows.length} →</a>
-          </div>
-          <div class="item-grid">
-            {showsPreview.map((item) => (
-              <div class="item-card">
-                {item.hasPage ? (
-                  <a href={`/shows/${item.slug}`} class="item-link">
-                    <strong>{item.title}</strong>
-                    {item.note && <p class="item-note">{item.note}</p>}
-                  </a>
-                ) : (
-                  <div>
-                    <strong>{item.title}</strong>
-                    {item.note && <p class="item-note">{item.note}</p>}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      <!-- Movies -->
-      {moviesPreview.length > 0 && (
-        <div class="content-section">
-          <div class="section-header">
-            <h2 class="title is-3">🎬 Movies</h2>
-            <a href="/movies" class="view-all">View all {movies.length} →</a>
-          </div>
-          <div class="item-grid">
-            {moviesPreview.map((item) => (
-              <div class="item-card">
-                {item.hasPage ? (
-                  <a href={`/movies/${item.slug}`} class="item-link">
-                    <strong>{item.title}</strong>
-                    {item.note && <p class="item-note">{item.note}</p>}
-                  </a>
-                ) : (
-                  <div>
-                    <strong>{item.title}</strong>
-                    {item.note && <p class="item-note">{item.note}</p>}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      <!-- People -->
-      {peoplePreview.length > 0 && (
-        <div class="content-section">
-          <div class="section-header">
-            <h2 class="title is-3">👥 People</h2>
-            <a href="/people" class="view-all">View all {people.length} →</a>
-          </div>
-          <div class="item-grid">
-            {peoplePreview.map((item) => (
-              <div class="item-card">
-                {item.hasPage ? (
-                  <a href={`/people/${item.slug}`} class="item-link">
-                    <strong>{item.title}</strong>
-                    {item.note && <p class="item-note">{item.note}</p>}
-                  </a>
-                ) : (
-                  <div>
-                    <strong>{item.title}</strong>
-                    {item.note && <p class="item-note">{item.note}</p>}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      <!-- Projects -->
-      {projectsPreview.length > 0 && (
-        <div class="content-section">
-          <div class="section-header">
-            <h2 class="title is-3">🛠️ Projects</h2>
-            <a href="/projects" class="view-all">View all {projects.length} →</a>
-          </div>
-          <div class="item-grid">
-            {projectsPreview.map((item) => (
-              <div class="item-card">
-                {item.hasPage ? (
-                  <a href={`/projects/${item.slug}`} class="item-link">
-                    <strong>{item.title}</strong>
-                    {item.note && <p class="item-note">{item.note}</p>}
-                  </a>
-                ) : (
-                  <div>
-                    <strong>{item.title}</strong>
-                    {item.note && <p class="item-note">{item.note}</p>}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      <ContentMasonry groups={nonEmptyGroups} />
     </div>
   </section>
 </BaseLayout>
-
-<style>
-  .content-section {
-    margin-bottom: 4rem;
-  }
-
-  .section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    border-bottom: 2px solid #f0f0f0;
-    padding-bottom: 0.5rem;
-  }
-
-  .section-header .title {
-    margin-bottom: 0;
-  }
-
-  .view-all {
-    color: hsl(171, 100%, 41%);
-    text-decoration: none;
-    font-weight: 600;
-    white-space: nowrap;
-  }
-
-  .view-all:hover {
-    text-decoration: underline;
-  }
-
-  .item-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1rem;
-  }
-
-  .item-card {
-    padding: 1rem;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    transition: all 0.2s ease;
-    background: white;
-  }
-
-  .item-card:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transform: translateY(-2px);
-  }
-
-  .item-link {
-    text-decoration: none;
-    color: inherit;
-    display: block;
-  }
-
-  .item-link:hover strong {
-    color: hsl(171, 100%, 41%);
-  }
-
-  .item-note {
-    margin-top: 0.5rem;
-    font-size: 0.9rem;
-    color: #666;
-    font-style: italic;
-  }
-
-  @media screen and (max-width: 768px) {
-    .item-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .section-header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.5rem;
-    }
-  }
-</style>
