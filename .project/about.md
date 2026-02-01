@@ -14,6 +14,13 @@ I don't know exactly what I want as far as how to display this content. I can li
 - Wikipedia
 - TiddlyWiki - Seems like TW should be a big point of inspiration as far as how to handle showing the types of content that I have and will/may have (the non-linearity in particular).
 
+These are my thoughts as I figure out more of what I want to make:
+
+- Everything is a Thing that I can track, organized into collections.
+- I think there should be a base/general view that can display any kind of thing, in addition to views that are specific to a type of thing.
+  - Example: `/shows[/:slug]` are 2 views for listing TV shows and viewing them, but a Base set of views could also render them but more generically.
+  - The `shows` (and other specific) view(s) might implement displaying external data for example, whereas Base wouldn't.
+
 ## Hosting
 
 The plan is to have this hosted on Cloudflare, ideally keeping within the free tier.
