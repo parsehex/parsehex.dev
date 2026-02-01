@@ -113,7 +113,7 @@ const fileContent = `---
 ${frontmatter}
 ---
 
-# {title}\n`;
+# {frontmatter.title}\n`;
 
 await fs.writeFile(dest, fileContent, { encoding: 'utf-8' });
 
