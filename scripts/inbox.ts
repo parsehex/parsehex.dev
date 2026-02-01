@@ -26,7 +26,7 @@ const argv = await yargs(hideBin(process.argv)).option('verbose', {
 	type: 'boolean',
 }).parse();
 
-const inboxDir = path.resolve(__dirname, '../inbox');
+const inboxDir = path.resolve(__dirname, '../src/data/inbox');
 const contentDir = path.resolve(__dirname, '../src/content');
 
 interface InboxEntry {

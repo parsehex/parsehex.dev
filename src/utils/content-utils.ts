@@ -97,7 +97,7 @@ export async function getContentItems(
 	}
 
 	// 3. Read inbox YAML (inbox/{type}.yaml)
-	const inboxPath = resolve(`./inbox/${contentType}.yaml`);
+	const inboxPath = resolve(`./src/data/inbox/${contentType}.yaml`);
 	if (existsSync(inboxPath)) {
 		try {
 			const yamlContent = readFileSync(inboxPath, 'utf-8');
@@ -161,5 +161,7 @@ export function groupByCategory(
 		grouped.get(category)!.push(item);
 	}
 
-	return grouped;
+	return new Map(
+		Array.from(grouped.entries()).sort((a, b) => a[0].localeCompare(b[0])),
+	);
 }
