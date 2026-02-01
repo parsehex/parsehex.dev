@@ -121,7 +121,7 @@ const doc = new Document({
 (doc.get('tags') as any).flow = true;
 
 const fileContent = `---
-${doc.toString({ flowCollectionPadding: false })}
+${doc.toString({ flowCollectionPadding: false }).trim()}
 ---\n`;
 
 

@@ -18,6 +18,8 @@ import { titleToSlug } from '../src/utils';
 //   should be displayed under "Uncategorized" or similar
 //   of course, if the thing is in the inbox then use the inbox version
 
+// TODO: allow typing from the start as way to filter Things in inbox
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const argv = await yargs(hideBin(process.argv)).option('verbose', {
@@ -104,31 +106,45 @@ async function selectContentType(contentTypes: string[]): Promise<string> {
 	});
 }
 
-async function selectCategory(entries: { category: string; entries: InboxEntry[]; filename: string }[]): Promise<{ category: string; entries: InboxEntry[]; filename: string }> {
-	const choices = entries.map(group => ({
-		name: `${group.category} (${group.entries.length} entries)`,
-		value: group,
-	}));
-
-	return await select({
-		message: 'Select category:',
-		choices,
-	});
+interface EntryWithContext extends InboxEntry {
+	category: string;
+	filename: string;
+	originalIndex: number;
 }
 
-async function selectEntries(entries: InboxEntry[]): Promise<InboxEntry[]> {
-	const choices = entries.map((entry, index) => ({
-		name: `${entry.title}${entry.notes ? chalk.dim(` - ${entry.notes}`) : ''}`,
-		value: index,
-	}));
+async function selectEntriesFromAllCategories(
+	entriesByCategory: { category: string; entries: InboxEntry[]; filename: string }[]
+): Promise<EntryWithContext[]> {
+	const choices: Array<{ name: string; value: EntryWithContext; }> = [];
 
-	const selectedIndices = await checkbox({
+	let globalIndex = 0;
+	for (const group of entriesByCategory) {
+		// Add entries for this category with category prefix
+		for (let i = 0; i < group.entries.length; i++) {
+			const entry = group.entries[i];
+			const categoryPrefix = chalk.cyan(chalk.dim('[') + group.category + chalk.dim(']'));
+			choices.push({
+				name: `${categoryPrefix} ${entry.title}${entry.notes ? chalk.dim(` - ${entry.notes}`) : ''}`,
+				value: {
+					...entry,
+					category: group.category,
+					filename: group.filename,
+					originalIndex: i,
+				},
+			});
+			globalIndex++;
+		}
+	}
+
+	choices.sort((a, b) => a.name.localeCompare(b.name));
+
+	const selectedEntries = await checkbox({
 		message: 'Select entries to create (Space to select, Enter to confirm):',
 		choices,
 		required: true,
 	});
 
-	return selectedIndices.map(index => entries[index]);
+	return selectedEntries.filter(e => e !== null);
 }
 
 async function createContentFile(entry: InboxEntry, contentType: string, category = ''): Promise<string> {
@@ -224,15 +240,8 @@ async function main() {
 			return;
 		}
 
-		// Select category
-		const selectedCategory = await selectCategory(entries);
-
-		if (argv.verbose) {
-			console.log(chalk.dim(`Selected category: ${selectedCategory.category}`));
-		}
-
-		// Select entries to convert
-		const selectedEntries = await selectEntries(selectedCategory.entries);
+		// Select entries from all categories
+		const selectedEntries = await selectEntriesFromAllCategories(entries);
 
 		if (selectedEntries.length === 0) {
 			console.log(chalk.yellow('No entries selected.'));
@@ -243,15 +252,15 @@ async function main() {
 
 		for (const entry of selectedEntries) {
 			try {
-				console.log(chalk.dim(`Creating: ${entry.title}`));
+				console.log(chalk.dim(`Creating: ${entry.title} (${entry.category})`));
 
 				// Create content file using existing new.ts script
-				const result = await createContentFile(entry, contentType, selectedCategory.category);
+				const result = await createContentFile(entry, contentType, entry.category);
 				console.log(chalk.green(`✓ Created: ${result}`));
 
 				// Remove entry from inbox file
-				await removeEntryFromFile(selectedCategory.filename, selectedCategory.category, entry.title);
-				console.log(chalk.dim(`  Removed from: ${selectedCategory.filename}`));
+				await removeEntryFromFile(entry.filename, entry.category, entry.title);
+				console.log(chalk.dim(`  Removed from: ${entry.filename}`));
 
 			} catch (error) {
 				console.error(chalk.red(`✗ Failed to create ${entry.title}: ${error}`));
