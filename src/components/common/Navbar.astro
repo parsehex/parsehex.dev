@@ -5,10 +5,6 @@ import menuOptions from '../../data/menu-options.json';
 import { nonEmptyCollections } from '@/content.config';
 
 const availTypes = nonEmptyCollections;
-
-// I want part of the navbar to be a list of Thing types with content
-//   dynamic because of non-empty filter && use amount/recency of content to sort and/or style
-// Eventually I expect to start having pages where the page is the content, which I would/will place outside the above list.
 ---
 
 <nav class="navbar" role="navigation" aria-label="main navigation">
@@ -36,15 +32,28 @@ const availTypes = nonEmptyCollections;
 			<a href={'/'} class="navbar-item f-600 tertiary-color ">
 				HOME
 			</a>
-			{
-				availTypes.map((option) => {
-					return (
-						<a href={'/' + option} class="navbar-item f-600 tertiary-color ">
-							{option.toUpperCase()}
-						</a>
-					);
-				})
-			}
+			<div
+				class="navbar-item is-flex is-flex-direction-column is-align-items-start p-0 ml-4 is-justify-content-center"
+			>
+				<span class="is-size-7 has-text-grey f-600 mb-0 is-unselectable" style="line-height: 1;"
+					>THINGS</span
+				>
+				<div class="is-flex">
+					{
+						availTypes.map((option) => {
+							return (
+								<a
+									href={'/' + option}
+									class="navbar-item is-size-6 tertiary-color pl-0 pr-3 py-0"
+									style="min-height: auto;"
+								>
+									{option.toUpperCase()}
+								</a>
+							);
+						})
+					}
+				</div>
+			</div>
 			<div class="mt-4">
 				<!-- <SearchBoxOrama client:visible /> -->
 

@@ -2,6 +2,10 @@
 
 .navbar {
 	background-color: colors.$white;
+	.navbar-item {
+		gap: 0;
+		padding-bottom: 0;
+	}
 	.navbar-item:hover,
 	.navbar-item:focus,
 	.navbar-item:active {
