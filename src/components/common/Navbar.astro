@@ -33,7 +33,7 @@ const availTypes = nonEmptyCollections;
 				HOME
 			</a>
 			<div
-				class="navbar-item is-flex is-flex-direction-column is-align-items-start p-0 ml-4 is-justify-content-center"
+				class="navbar-item is-flex is-flex-direction-column is-align-items-start p-0 mt-2 ml-3 ml-4-desktop is-justify-content-center"
 			>
 				<span class="is-size-7 has-text-grey f-600 mb-0 is-unselectable is-uppercase" style="line-height: 1;"
 					>Things I Like</span
@@ -44,7 +44,7 @@ const availTypes = nonEmptyCollections;
 							return (
 								<a
 									href={'/' + option}
-									class="navbar-item is-size-6 tertiary-color pl-0 pr-3 py-0"
+									class="navbar-item is-size-6 f-600 tertiary-color pl-0 pr-3 py-0"
 									style="min-height: auto;"
 								>
 									{option.toUpperCase()}
@@ -94,3 +94,11 @@ const availTypes = nonEmptyCollections;
 
 	document.addEventListener('DOMContentLoaded', () => openBurger());
 </script>
+
+<style>
+	@media (min-width: 1024px) {
+		.navbar-item {
+			margin-top: 0 !important;
+		}
+	}
+</style>
