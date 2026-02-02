@@ -1,17 +1,7 @@
 [
   {
-    "name": "Linkedin",
-    "icon": "fa6-brands:linkedin",
-    "url": "https://www.linkedin.com/"
-  },
-  {
     "name": "GitHub",
     "icon": "fa6-brands:github",
-    "url": "https://github.com/DomeT99/astro-minimal"
-  },
-  {
-    "name": "Dev.to",
-    "icon": "fa6-brands:dev",
-    "url": "https://dev.to"
+    "url": "https://github.com/parsehex"
   }
 ]

@@ -1,0 +1,10 @@
+{
+  "name": "parsehex-dev",
+  "compatibility_date": "2026-02-02",
+  "assets": {
+    "directory": "./dist"
+  },
+  "observability": {
+    "enabled": true
+  }
+}

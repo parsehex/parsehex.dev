@@ -1,13 +1,10 @@
 ---
-import { t, changeLanguage } from "i18next";
-import BaseLayout from "../layouts/BaseLayout.astro";
-
-changeLanguage("en");
+import BaseLayout from "@/layouts/BaseLayout.astro";
 ---
 
-<BaseLayout pageTitle={t("site.notFoundPageTitle")!} pageDescription={t("site.notFoundPageDescription")!}>
+<BaseLayout pageTitle='Error 404' pageDescription='Page not found'>
   <section class="has-text-centered mt-6">
-    <h1 class="is-size-1 is-size-3-mobile">{t("site.notFoundTitle")}</h1>
-    <p class="is-size-3 is-size-4-mobile">{t("site.notFoundDescription")}</p>
+    <h1 class="is-size-1 is-size-3-mobile">404</h1>
+    <p class="is-size-3 is-size-4-mobile">Page not found</p>
   </section>
 </BaseLayout>

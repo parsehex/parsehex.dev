@@ -1,6 +1,5 @@
 ---
 import DefaultLayout from './DefaultLayout.astro';
-import i18next from 'i18next';
 import { SEO } from 'astro-seo';
 
 export interface Props {
@@ -14,7 +13,7 @@ if (title) title += ' -';
 ---
 
 <!doctype html>
-<html lang={i18next.language} data-theme="light">
+<html lang='en' data-theme="light">
 	<head>
 		<meta charset="UTF-8" />
 		<SEO

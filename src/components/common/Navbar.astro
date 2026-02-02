@@ -2,8 +2,6 @@
 import { Icon } from 'astro-icon/components';
 import menuOptions from '../../data/menu-options.json';
 // import SearchBoxOrama from './SearchBoxOrama.vue';
-// @ts-ignore
-import { localizePath } from 'astro-i18next';
 import { nonEmptyCollections } from '@/content.config';
 
 const availTypes = nonEmptyCollections;
@@ -15,7 +13,7 @@ const availTypes = nonEmptyCollections;
 
 <nav class="navbar" role="navigation" aria-label="main navigation">
 	<div class="navbar-brand mt-4-desktop pt-4 mb-2 ml-2">
-		<a class="navbar-item" href={localizePath('/')}>
+		<a class="navbar-item" href='/'>
 			<h1 class="is-size-3 is-size-5-mobile tertiary-color f-normal">
 				parsehex
 			</h1>
