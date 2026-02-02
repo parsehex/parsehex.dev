@@ -9,9 +9,10 @@ import { Thing } from '@/types/schema';
 export type ContentType = 'movies' | 'shows' | 'people' | 'projects' | 'tools';
 
 export interface ContentItem extends z.infer<typeof Thing> {
-	note?: string; // .summary
+	note?: string; // .summary or .notes
 	slug: string;
 	category?: string; // first tag
+	parent?: string;
 	hasPage: boolean;
 	source: 'mdx' | 'content-yaml' | 'inbox-yaml';
 }
@@ -50,10 +51,15 @@ export async function getContentItems(
 		for (const entry of collection) {
 			// entry.id can be like "the-boys.mdx" or "subfolder/the-boys.mdx"
 			const slug = entry.id.replace(/\.mdx$/, '');
+			let parent = undefined as any;
+			if (slug.includes('/')) {
+				parent = slug.split('/')[0];
+			}
 			items.push({
 				category: getCategoryFromTags(entry.data.tags),
 				hasPage: true,
 				slug,
+				parent,
 				source: 'mdx',
 				...entry.data,
 			});

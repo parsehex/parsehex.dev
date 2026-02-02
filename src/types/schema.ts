@@ -38,6 +38,7 @@ export const Thing = z.object({
 	summary: z.string().optional(),
 	/** AI-generated, describes what this Thing is based on the content of its file. (**TODO**) */
 	ai_summary: z.string().optional(),
+	note: z.string().optional(),
 	notes: z.string().optional(),
 	/** Main place where somebody can go to learn about this Thing. */
 	url: z.string().optional(),

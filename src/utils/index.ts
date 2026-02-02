@@ -39,8 +39,8 @@ export function camelToTitle(camel: string) {
 // "House of Cards (US)" -> "house-of-cards-us"
 export function titleToSlug(title: string) {
 	if (!title) return;
-	title = title.replace(/[,.!?;;'"\[\]{}()/<>@&*^%$#]/g, '');
+	title = title.replace(/['"\[\]{}()/<>@&*^%$#]/g, '');
 	title = title.trim().toLowerCase();
-	title = title.replace(/\s/g, '-');
+	title = title.replace(/[\s,.!?:;]/g, '-');
 	return title;
 }

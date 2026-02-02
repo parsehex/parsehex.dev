@@ -118,7 +118,8 @@ const doc = new Document({
 });
 
 // use single-line syntax for tags list:
-(doc.get('tags') as any).flow = true;
+const tagsNode = doc.get('tags') as any;
+if (tagsNode) tagsNode.flow = true;
 
 const fileContent = `---
 ${doc.toString({ flowCollectionPadding: false }).trim()}

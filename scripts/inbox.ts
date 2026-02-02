@@ -21,6 +21,8 @@ import { titleToSlug } from '../src/utils';
 // TODO: allow typing from the start as way to filter Things in inbox
 // TODO: 		same for `think`
 
+// TODO: pass + save notes if present
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const argv = await yargs(hideBin(process.argv)).option('verbose', {
@@ -77,15 +79,35 @@ function getEntriesByType(inboxFiles: { [filename: string]: InboxFile }, content
 	for (const [filename, file] of Object.entries(inboxFiles)) {
 		if (filename.startsWith(contentType)) {
 			for (const [category, categoryEntries] of Object.entries(file)) {
-				const parsedEntries: InboxEntry[] = categoryEntries.map((entry: any) => {
-					if (typeof entry === 'string') {
-						return { title: entry };
-					} else if (entry && typeof entry === 'object' && Object.keys(entry).length === 1) {
-						const [title] = Object.keys(entry);
-						return { title, notes: entry[title] };
-					}
-					return { title: String(entry) };
-				}).filter((entry: any) => entry.title);
+				let parsedEntries: InboxEntry[] = [];
+
+				if (Array.isArray(categoryEntries)) {
+					parsedEntries = categoryEntries
+						.map((entry: any) => {
+							if (typeof entry === 'string') {
+								return { title: entry };
+							} else if (
+								entry &&
+								typeof entry === 'object' &&
+								Object.keys(entry).length === 1
+							) {
+								const [title] = Object.keys(entry);
+								return { title, notes: entry[title] };
+							}
+							return { title: String(entry) };
+						})
+						.filter((entry: any) => entry.title);
+				} else if (
+					categoryEntries &&
+					typeof categoryEntries === 'object'
+				) {
+					parsedEntries = Object.entries(categoryEntries).map(
+						([title, notes]) => ({
+							title,
+							notes: String(notes),
+						}),
+					);
+				}
 
 				if (parsedEntries.length > 0) {
 					entries.push({ category, entries: parsedEntries, filename });
@@ -123,9 +145,13 @@ async function selectEntriesFromAllCategories(
 		// Add entries for this category with category prefix
 		for (let i = 0; i < group.entries.length; i++) {
 			const entry = group.entries[i];
-			const categoryPrefix = chalk.cyan(chalk.dim('[') + group.category + chalk.dim(']'));
+			const displayCategory =
+				group.category === '_' ? '' : group.category;
+			const categoryPrefix = displayCategory ? chalk.cyan(
+				chalk.dim('[') + displayCategory + chalk.dim(']'),
+			) : '';
 			choices.push({
-				name: `${categoryPrefix} ${entry.title}${entry.notes ? chalk.dim(` - ${entry.notes}`) : ''}`,
+				name: `${categoryPrefix} ${entry.title}${entry.notes ? chalk.dim(` - ${entry.notes}`) : ''}`.trim(),
 				value: {
 					...entry,
 					category: group.category,
@@ -182,19 +208,42 @@ async function removeEntryFromFile(filename: string, category: string, entryTitl
 	const fileData = yaml.parse(content) as InboxFile;
 
 	if (fileData[category]) {
-		fileData[category] = fileData[category].filter((entry: any) => {
-			if (typeof entry === 'string') {
-				return entry !== entryTitle;
-			} else if (entry && typeof entry === 'object' && Object.keys(entry).length === 1) {
-				const [title] = Object.keys(entry);
-				return title !== entryTitle;
-			}
-			return true;
-		});
+		const categoryData = fileData[category];
+		if (Array.isArray(categoryData)) {
+			fileData[category] = categoryData.filter((entry: any) => {
+				if (typeof entry === 'string') {
+					return entry !== entryTitle;
+				} else if (
+					entry &&
+					typeof entry === 'object' &&
+					Object.keys(entry).length === 1
+				) {
+					const [title] = Object.keys(entry);
+					return title !== entryTitle;
+				}
+				return true;
+			});
+		} else if (
+			categoryData &&
+			typeof categoryData === 'object'
+		) {
+			// It's a key-value map
+			delete (fileData[category] as any)[entryTitle];
+		}
 
 		// Remove empty categories
-		if ((fileData[category] as any).length === 0) {
-			delete fileData[category];
+		const updatedCategoryData = fileData[category];
+		if (Array.isArray(updatedCategoryData)) {
+			if (updatedCategoryData.length === 0) {
+				delete fileData[category];
+			}
+		} else if (
+			updatedCategoryData &&
+			typeof updatedCategoryData === 'object'
+		) {
+			if (Object.keys(updatedCategoryData).length === 0) {
+				delete fileData[category];
+			}
 		}
 
 		// Remove empty files
@@ -256,7 +305,12 @@ async function main() {
 				console.log(chalk.dim(`Creating: ${entry.title} (${entry.category})`));
 
 				// Create content file using existing new.ts script
-				const result = await createContentFile(entry, contentType, entry.category);
+				const categoryArg = entry.category === '_' ? '' : entry.category;
+				const result = await createContentFile(
+					entry,
+					contentType,
+					categoryArg,
+				);
 				console.log(chalk.green(`✓ Created: ${result}`));
 
 				// Remove entry from inbox file

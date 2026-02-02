@@ -3,23 +3,23 @@ import { glob } from 'astro/loaders';
 import { Thing, Person, Project } from './types/schema';
 
 const movies = defineCollection({
-	loader: glob({ pattern: ['*.mdx'], base: 'src/content/movies' }),
+	loader: glob({ pattern: ['**/*.mdx'], base: 'src/content/movies' }),
 	schema: Thing,
 });
 const people = defineCollection({
-	loader: glob({ pattern: ['*.mdx'], base: 'src/content/people' }),
+	loader: glob({ pattern: ['**/*.mdx'], base: 'src/content/people' }),
 	schema: Person,
 });
 const projects = defineCollection({
-	loader: glob({ pattern: ['*.mdx'], base: 'src/content/projects' }),
+	loader: glob({ pattern: ['**/*.mdx'], base: 'src/content/projects' }),
 	schema: Project,
 });
 const shows = defineCollection({
-	loader: glob({ pattern: ['*.mdx'], base: 'src/content/shows' }),
+	loader: glob({ pattern: ['**/*.mdx'], base: 'src/content/shows' }),
 	schema: Thing,
 });
 const tools = defineCollection({
-	loader: glob({ pattern: ['*.mdx'], base: 'src/content/tools' }),
+	loader: glob({ pattern: ['**/*.mdx'], base: 'src/content/tools' }),
 	schema: Thing,
 });
 
