@@ -4,37 +4,55 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Hero from '@/components/common/Hero.astro';
 import { camelToTitle } from '@/utils';
 import { getContentItems, groupByCategory } from '@/utils/content-utils';
-import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
 	const availTypes = Object.keys(collections);
-	// TODO: simplify / make cleaner
-	const allThings = (
-		await Promise.all(availTypes.map((t) => getCollection(t as any)))
-	).map((v, i) => [availTypes[i], v]);
-	const paths = allThings.map((resultArr: any[]) => {
-		const type = resultArr[0];
-		const things = resultArr[1];
-		return {
-			params: { type },
-			props: { things },
-		};
-	});
-	return paths.flat();
+	const paths = [];
+
+	for (const type of availTypes) {
+		const items = await getContentItems(type as any);
+
+		// Add root collection path
+		paths.push({ params: { type } });
+
+		// Add folder paths
+		const parents = new Set(items.map(i => i.parent).filter(Boolean));
+		for (const parent of parents) {
+			paths.push({ params: { type: `${type}/${parent}` } });
+		}
+	}
+
+	return paths;
 }
 
 const { type } = Astro.params;
-const typeTitle = type[0].toUpperCase() + type.substring(1);
-const items = await getContentItems(type);
+
+// Parse type to get collection and potential parent folder
+const parts = type.split('/');
+const collectionName = parts[0];
+const parentFolder = parts.length > 1 ? parts.slice(1).join('/') : undefined;
+
+const collectionTitle = camelToTitle(collectionName);
+const pageTitle = parentFolder
+	? `${collectionTitle} / ${parentFolder.split('/').map(camelToTitle).join(' / ')}`
+	: collectionTitle;
+
+// Get items and filter by parent if needed
+let items = await getContentItems(collectionName as any);
+if (parentFolder) {
+	// Filter for items in this specific folder (acting as parent)
+	items = items.filter(item => item.parent === parentFolder);
+}
+
 const grouped = groupByCategory(items);
 ---
 
-<BaseLayout pageTitle={camelToTitle(typeTitle)}>
+<BaseLayout pageTitle={pageTitle}>
 
 	<!-- TODO: use Hero slot for tags filter -->
 	<Hero
-		title={camelToTitle(typeTitle)}
-		subtitle={`Browse all ${typeTitle.toLowerCase()}`}
+		title={pageTitle}
+		subtitle={`Browse all ${collectionName}`}
 		size="is-small"
 	/>
 
@@ -59,7 +77,7 @@ const grouped = groupByCategory(items);
 								{items.map((item) => (
 									<li class="list-item">
 										{item.hasPage ? (
-											<a href={`/${type}/${item.slug}`} class="item-link">
+											<a href={`/${collectionName}/${item.slug}`} class="item-link">
 												<span class="item-title">{item.title}</span>
 												{item.note && <span class="item-note"> — {item.note}</span>}
 											</a>

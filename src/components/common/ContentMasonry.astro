@@ -35,7 +35,7 @@ const { groups } = Astro.props;
         <ul class="compact-list">
           {group.items.map((item) => (
             <li class="list-item">
-							{item.parent && <span><a class="item-parent" href={`/${group.type || 'things'}/${item.parent}`}>{item.parent}</a> / </span>}
+							{item.parent && <span style="cursor:default;color:#bbb;"><a class="item-parent" href={`/${group.type || 'things'}/${item.parent}`}>{item.parent}</a> / </span>}
               {item.hasPage ? (
                 <a href={`/${group.type || 'things'}/${item.slug}`} class="item-link">
                   <span class="item-title">{item.title}</span>
@@ -140,5 +140,13 @@ const { groups } = Astro.props;
 		opacity: 0.8;
 		display: block !important;
 		margin-left: 1rem !important;
+	}
+
+	.item-parent {
+		padding-right: 0.35rem;
+		&:hover {
+			text-decoration: underline;
+			text-underline-offset: 0.2rem;
+		}
 	}
 </style>
