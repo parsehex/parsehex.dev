@@ -18,10 +18,15 @@ const shows = defineCollection({
 	loader: glob({ pattern: ['**/*.mdx'], base: 'src/content/shows' }),
 	schema: Thing,
 });
+// TODO: tech
+//   -> webdev
+//   -> ai
 const tools = defineCollection({
 	loader: glob({ pattern: ['**/*.mdx'], base: 'src/content/tools' }),
 	schema: Thing,
 });
+
+// TODO: Knowhow section (blog-like)
 
 export const collections = { movies, people, projects, shows, tools };
 export const nonEmptyCollections: string[] = [];

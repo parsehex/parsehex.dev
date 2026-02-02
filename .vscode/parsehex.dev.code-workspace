@@ -1,0 +1,20 @@
+{
+	"folders": [
+		{
+			"path": "../src/content"
+		},
+		{
+			"path": "../src/data/inbox"
+		},
+		{
+			"path": "..",
+			"name": "(root)"
+		},
+	],
+	"settings": {
+		"files.exclude": {
+			"src/content": true,
+			"src/data/inbox": true,
+		}
+	}
+}
