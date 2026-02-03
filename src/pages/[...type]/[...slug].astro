@@ -44,7 +44,7 @@ function formatDate(timestamp?: number): string {
 			<div class="content-wrapper">
 				<!-- Header Section -->
 				<header class="thing-header">
-					<h1 class="title is-1">{thing.data.title}</h1>
+					<h2 class="title is-2">{thing.data.title}</h2>
 					<!-- TODO maybe: display other Things with the same (or fuzzy?) name ("See also"?) -->
 
 					{thing.data.summary && (
@@ -117,6 +117,12 @@ function formatDate(timestamp?: number): string {
 		</div>
 	</section>
 </BaseLayout>
+
+<style is:global>
+	pre {
+		text-wrap: auto;
+	}
+</style>
 
 <style>
 	.content-wrapper {

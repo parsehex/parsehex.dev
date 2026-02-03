@@ -53,7 +53,6 @@ export const Thing = z.object({
 });
 
 export const Project = Thing.extend({
-	owner: Full_ID,
 	/** Where the source code lives (if open source). */
 	repo_url: z.string().optional(),
 	docs_url: z.string().optional(),
