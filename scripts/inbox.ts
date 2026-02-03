@@ -13,6 +13,7 @@ import chalk from 'chalk';
 import { select, input, confirm, checkbox } from '@inquirer/prompts';
 import { spawn } from 'child_process';
 import { titleToSlug } from '../src/utils';
+import yamlCfg from './yaml-cfg.json';
 
 // TODO: look through thing references within the content to find any un-linked
 //   should be displayed under "Uncategorized" or similar
@@ -250,7 +251,7 @@ async function removeEntryFromFile(filename: string, category: string, entryTitl
 		if (Object.keys(fileData).length === 0) {
 			await fs.unlink(filePath);
 		} else {
-			await fs.writeFile(filePath, yaml.stringify(fileData), { encoding: 'utf-8' });
+			await fs.writeFile(filePath, yaml.stringify(fileData, yamlCfg), { encoding: 'utf-8' });
 		}
 	}
 }

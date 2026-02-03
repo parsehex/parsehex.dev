@@ -13,6 +13,7 @@ import { hideBin } from 'yargs/helpers';
 import chalk from 'chalk';
 import { select, input, confirm } from '@inquirer/prompts';
 import { slugToTitle, titleToSlug } from '../src/utils';
+import yamlCfg from './yaml-cfg.json';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -122,7 +123,7 @@ const tagsNode = doc.get('tags') as any;
 if (tagsNode) tagsNode.flow = true;
 
 const fileContent = `---
-${doc.toString({ flowCollectionPadding: false }).trim()}
+${doc.toString(yamlCfg).trim()}
 ---\n`;
 
 

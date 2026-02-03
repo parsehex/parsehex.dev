@@ -5,6 +5,18 @@ import menuOptions from '../../data/menu-options.json';
 import { nonEmptyCollections } from '@/content.config';
 
 const availTypes = nonEmptyCollections;
+
+const isDev = import.meta.env.DEV;
+let editorRunning = false;
+
+if (isDev) {
+	try {
+		await fetch('http://localhost:5173');
+		editorRunning = true;
+	} catch (error) {
+		editorRunning = false;
+	}
+}
 ---
 
 <nav class="navbar" role="navigation" aria-label="main navigation">
@@ -32,6 +44,11 @@ const availTypes = nonEmptyCollections;
 			<a href={'/'} class="navbar-item f-600 tertiary-color ">
 				HOME
 			</a>
+			{editorRunning && (
+				<a href="http://localhost:5173" target="_blank" class="navbar-item f-600 tertiary-color ">
+					EDITOR
+				</a>
+			)}
 			<div
 				class="navbar-item is-flex is-flex-direction-column is-align-items-start p-0 mt-2 ml-3 ml-4-desktop is-justify-content-center"
 			>

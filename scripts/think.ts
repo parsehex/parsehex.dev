@@ -12,6 +12,7 @@ import { hideBin } from 'yargs/helpers';
 import chalk from 'chalk';
 import { select, input, confirm } from '@inquirer/prompts';
 import { titleToSlug } from '../src/utils';
+import yamlCfg from './yaml-cfg.json';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -117,9 +118,7 @@ async function addThoughtToFile(contentType: string, slug: string, thoughtData: 
 	frontmatter.thoughts.push(thoughtData);
 
 	// Write back to file
-	const newFrontmatter = yaml.stringify(frontmatter, {
-		singleQuote: true,
-	}).trim();
+	const newFrontmatter = yaml.stringify(frontmatter, yamlCfg).trim();
 	const newContent = `---\n${newFrontmatter}\n---\n\n${body}`;
 
 	await fs.writeFile(filePath, newContent, { encoding: 'utf-8' });
