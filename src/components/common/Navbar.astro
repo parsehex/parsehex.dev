@@ -72,6 +72,22 @@ if (isDev) {
 					}
 				</div>
 			</div>
+
+			{
+				menuOptions.map((option) => {
+					return (
+						<a
+							href={option.href}
+							class="navbar-item is-size-6 f-600 tertiary-color"
+							title={option.ariaLabel || undefined}
+							aria-label={option.ariaLabel || undefined}
+						>
+							{option.text.toUpperCase()}
+						</a>
+					);
+				})
+			}
+
 			<div class="mt-4">
 				<!-- <SearchBoxOrama client:visible /> -->
 
