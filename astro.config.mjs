@@ -5,4 +5,7 @@ import mdx from '@astrojs/mdx';
 
 export default defineConfig({
 	integrations: [vue(), icon(), mdx()],
+	markdown: {
+		smartypants: false,
+	},
 });
