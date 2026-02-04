@@ -45,6 +45,14 @@ if (parentFolder) {
 }
 
 const grouped = groupByCategory(items);
+
+import { getAllThoughts } from "@/utils/content-utils";
+import ThoughtsFeed from "@/components/common/ThoughtsFeed.astro";
+
+// Fetch thoughts for this collection (and potentially parent folder)
+// The getAllThoughts function supports filtering by "type" or "type/parent"
+// We can use the 'type' param directly from Astro.params which includes the full slug path e.g. "tools/ai"
+const thoughts = await getAllThoughts(type);
 ---
 
 <BaseLayout pageTitle={pageTitle}>
@@ -56,7 +64,16 @@ const grouped = groupByCategory(items);
 		size="is-small"
 	/>
 
-	<section class="section">
+	{thoughts.length > 0 && (
+			<section class="section" style="padding-top: 1rem; padding-bottom: 2rem;">
+					<div class="container">
+							<h3 class="title is-5 mb-3">Latest Thinks</h3>
+							<ThoughtsFeed thoughts={thoughts} limit={10} />
+					</div>
+			</section>
+	)}
+
+	<section>
 		<div class="container">
 			<div class="categories-masonry">
 				{

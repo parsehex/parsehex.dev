@@ -26,6 +26,11 @@ const groups = await Promise.all(
 
 // Filter out empty groups if desired
 const nonEmptyGroups = groups.filter(g => g.count > 0);
+
+import { getAllThoughts } from "@/utils/content-utils";
+import ThoughtsFeed from "@/components/common/ThoughtsFeed.astro";
+
+const recentThoughts = await getAllThoughts();
 ---
 
 <BaseLayout
@@ -38,7 +43,14 @@ const nonEmptyGroups = groups.filter(g => g.count > 0);
     primary
 	/>
 
-  <section class="section">
+  <section style="padding-top: 1rem; padding-bottom: 2rem;">
+      <div class="container">
+          <h3 class="title is-5 mb-3">Latest Thinks</h3>
+          <ThoughtsFeed thoughts={recentThoughts} limit={10} />
+      </div>
+  </section>
+
+  <section>
     <div class="container">
       <ContentMasonry groups={nonEmptyGroups} />
     </div>

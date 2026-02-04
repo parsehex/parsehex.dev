@@ -5,6 +5,8 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import { collections } from '@/content.config';
 import ThingRef from '@/components/common/ThingRef.astro';
 import ThoughtsList from '@/components/common/ThoughtsList.astro';
+import ThoughtsFeed from '@/components/common/ThoughtsFeed.astro';
+import { updateThoughts } from '@/utils/content-utils';
 
 export async function getStaticPaths() {
 	const availTypes = Object.keys(collections);
@@ -35,84 +37,99 @@ function formatDate(timestamp?: number): string {
 		day: 'numeric',
 	});
 }
+
+const thoughts = updateThoughts(thing.data.thoughts, thing);
 ---
 
 <BaseLayout pageTitle={thing.data.title} pageDescription={thing.data.summary}>
 	<!-- This page is a general view for any Thing that doesn't already have a specific page for it. -->
 	<section class="section">
 		<div class="container">
-			<div class="content-wrapper">
-				<!-- Header Section -->
-				<header class="thing-header">
-					<h2 class="title is-2">{thing.data.title}</h2>
-					<!-- TODO maybe: display other Things with the same (or fuzzy?) name ("See also"?) -->
+            <header class="thing-header">
+                <h2 class="title is-2">{thing.data.title}</h2>
+                <!-- TODO maybe: display other Things with the same (or fuzzy?) name ("See also"?) -->
 
-					{thing.data.summary && (
-						<p class="subtitle is-4 has-text-grey-dark">{thing.data.summary}</p>
-					)}
+                {thing.data.summary && (
+                    <p class="subtitle is-4 has-text-grey-dark">{thing.data.summary}</p>
+                )}
 
-					<!-- Metadata Bar -->
-					<div class="metadata-bar">
-						{thing.data.created && (
-							<span class="metadata-item">
-								<strong>Created:</strong> {formatDate(thing.data.created)}
-							</span>
-						)}
-						{thing.data.updated && (
-							<span class="metadata-item">
-								<strong>Updated:</strong> {formatDate(thing.data.updated)}
-							</span>
-						)}
-						{thing.data.url && (
-							<span class="metadata-item">
-								<a href={thing.data.url} target="_blank" rel="noopener noreferrer" class="external-link">
-									Go to {thing.data.title} →
-								</a>
-							</span>
-						)}
-					</div>
+                <!-- Tags -->
+                {thing.data.tags && thing.data.tags.length > 0 && (
+                    <div class="sidebar-block">
+                        <div class="tags-list">
+                            {thing.data.tags.map((tag: string) => (
+                                <span class="tag is-light">{tag}</span>
+                            ))}
+                        </div>
+                    </div>
+                )}
 
-					<!-- Tags -->
-					{thing.data.tags && thing.data.tags.length > 0 && (
-						<div class="tags-section">
-							{thing.data.tags.map((tag: string) => (
-								<span class="tag is-primary is-medium">{tag}</span>
-							))}
-						</div>
-					)}
-				</header>
+                <div class="metadata-bar">
+                    {thing.data.created && (
+                        <span class="metadata-item">
+                            <strong>Posted:</strong> {formatDate(thing.data.created)}
+                        </span>
+                    )}
+                    {thing.data.updated && (
+                        <span class="metadata-item">
+                            <strong>Updated:</strong> {formatDate(thing.data.updated)}
+                        </span>
+                    )}
 
-				<!-- Main Content -->
-				{thing.data.notes && (
-					<div class="notes-section">
-						<h3 class="title is-4">Notes</h3>
-						<div class="notes-content">
-							<p>{thing.data.notes}</p>
-						</div>
-					</div>
-				)}
+                </div>
+            </header>
 
-				<!-- MDX Content -->
-				<div class="mdx-content">
-					<Content />
-				</div>
+			<div class="content-layout">
+				<!-- Main Content Column -->
+                <div class="main-column">
+                    {thing.data.thoughts && thing.data.thoughts.length > 0 && (
+                        <section style="padding-bottom: 2rem;">
+                            <div class="container">
+                                <h3 class="title is-5 mb-3">Latest Thinks</h3>
+                                <ThoughtsFeed thoughts={thoughts} limit={10} />
+                            </div>
+                        </section>
+                    )}
 
-				<!-- Thoughts -->
-				<ThoughtsList thoughts={thing.data.thoughts} />
+                    <!-- MDX Content -->
+                    <div class="mdx-content">
+                        <Content />
+                    </div>
 
-				<!-- References -->
-				{thing.data.references && thing.data.references.length > 0 && (
-					<div class="references-section">
-						<h3 class="title is-4">References</h3>
-						<ul class="references-list">
-							{thing.data.references.map((ref: any) => (
-								<li class="reference-item">
-									<ThingRef ref={ref} />
-								</li>
-							))}
-						</ul>
-					</div>
-				)}
+                    {thing.data.notes && (
+                        <div class="notes-section">
+                            <h3 class="title is-4">Notes</h3>
+                            <div class="notes-content">
+                                <p>{thing.data.notes}</p>
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                <!-- Sidebar Column -->
+                <aside class="sidebar-column">
+                    {thing.data.url && (
+                        <div class="sidebar-block">
+                            <a href={thing.data.url} target="_blank" rel="noopener noreferrer" class="button is-primary is-outlined is-fullwidth">
+                                Go to {thing.data.title} →
+                            </a>
+                        </div>
+                    )}
+
+                    <!-- References -->
+                    {thing.data.references && thing.data.references.length > 0 && (
+                        <div class="sidebar-block">
+                            <h4 class="sidebar-title">References</h4>
+                            <ul class="references-list">
+                                {thing.data.references.map((ref: any) => (
+                                    <li class="reference-item">
+                                        <ThingRef ref={ref} />
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                </aside>
 			</div>
 		</div>
 	</section>
@@ -125,89 +142,95 @@ function formatDate(timestamp?: number): string {
 </style>
 
 <style>
-	.content-wrapper {
-		max-width: 800px;
-		margin: 0 auto;
-	}
+    .section {
+        padding: 1.5rem;
+    }
 
 	.thing-header {
-		margin-bottom: 2rem;
-		padding-bottom: 1.5rem;
-		border-bottom: 2px solid #f0f0f0;
+		margin-bottom: 1rem;
+		padding-bottom: 0.5rem;
+		border-bottom: 1px solid #eee;
 	}
 
-	.metadata-bar {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 1.5rem;
-		margin-top: 1rem;
-		font-size: 0.9rem;
-		color: #666;
-	}
+    .metadata-bar {
+        display: flex;
+        gap: 1.5rem;
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+        color: #777;
+    }
 
-	.metadata-item {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-	}
+    .content-layout {
+        display: grid;
+        grid-template-columns: 1fr 300px;
+        gap: 3rem;
+    }
 
-	.external-link {
-		color: hsl(171, 100%, 41%);
-		text-decoration: none;
-		font-weight: 600;
-	}
+    .main-column {
+        min-width: 0; /* Prevents flex/grid overflow issues */
+    }
 
-	.external-link:hover {
-		text-decoration: underline;
-	}
+    .sidebar-column {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
 
-	.tags-section {
-		margin-top: 1rem;
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5rem;
-	}
+    .sidebar-block {
+        margin-bottom: 1rem;
+    }
+
+    .sidebar-title {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #999;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+    }
+
+    .mdx-content {
+        line-height: 1.7;
+        font-size: 1.05rem;
+    }
 
 	.notes-section {
-		margin-top: 2rem;
+		margin-top: 3rem;
 		padding: 1.5rem;
-		background: #f9f9f9;
+		background: #fafafa;
 		border-radius: 8px;
-	}
-
-	.notes-content {
-		margin-top: 0.5rem;
-		line-height: 1.6;
-	}
-
-	.mdx-content {
-		margin-top: 2rem;
-		line-height: 1.7;
-	}
-
-	.references-section {
-		margin-top: 2rem;
+        border: 1px solid #f0f0f0;
 	}
 
 	.references-list {
 		list-style: none;
-		padding-left: 0;
-		margin-top: 1rem;
+		padding: 0;
+        margin: 0;
 	}
 
 	.reference-item {
-		padding: 0.75rem 0;
-		border-bottom: 1px solid #f0f0f0;
+        padding: 0.5rem 0;
+		border-bottom: 1px solid #f5f5f5;
+        font-size: 0.9rem;
 	}
 
-	.reference-item:last-child {
-		border-bottom: none;
-	}
+    .tags-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
 
 	@media screen and (max-width: 768px) {
-		.metadata-bar {
-			flex-direction: column;
-			gap: 0.5rem;
-		}
+		.content-layout {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .sidebar-column {
+            order: 2; /* Sidebar below content on mobile, or maybe above? */
+            /* Creating a visual separation */
+            border-top: 1px solid #eee;
+            padding-top: 2rem;
+        }
 	}
 </style>

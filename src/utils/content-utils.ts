@@ -171,3 +171,92 @@ export function groupByCategory(
 		Array.from(grouped.entries()).sort((a, b) => a[0].localeCompare(b[0])),
 	);
 }
+
+export interface ThoughtItem {
+	timestamp: string;
+	content: any;
+	thing: {
+		title: string;
+		slug: string;
+		type: ContentType;
+		category?: string;
+	};
+}
+
+export async function getAllThoughts(
+	filterType?: ContentType | string,
+): Promise<ThoughtItem[]> {
+	const allTypes: ContentType[] = [
+		'movies',
+		'shows',
+		'people',
+		'projects',
+		'tools',
+	]; // Keep in sync with ContentType type
+	let items: ContentItem[] = [];
+
+	// If filterType matches one of the collections, fetching just that is efficient
+	if (filterType && allTypes.includes(filterType as ContentType)) {
+		items = await getContentItems(filterType as ContentType);
+	} else {
+		// Otherwise fetch everything (needed if filterType is a subtype or to get all)
+		for (const type of allTypes) {
+			const typeItems = await getContentItems(type);
+			// modify items to include 'type' if it's not already in ContentItem (it isn't by default in the interface above)
+			// effectively we need to augment the item with its type for the thought context
+			const typedItems = typeItems.map((item) => ({ ...item, type }));
+			items.push(...typedItems as any);
+		}
+	}
+
+	// Filter by subtype if needed (e.g. 'tools/ai')
+	if (filterType && filterType.includes('/')) {
+		// filterType is like "tools/ai"
+		// items should be filtered where the item's ID or slug starts with the pattern?
+		// OR checks the parent.
+		const [mainType, subType] = filterType.split('/');
+		// Re-filter just in case we fetched everything
+		items = items.filter(i => (i as any).type === mainType && i.parent === subType);
+	}
+
+	const allThoughts: ThoughtItem[] = [];
+
+	for (const item of items) {
+		if (item.thoughts && Array.isArray(item.thoughts)) {
+			for (const thoughtObj of item.thoughts) {
+				const entries = Object.entries(thoughtObj);
+				for (const [key, value] of entries) {
+					// Check if key is a timestamp (numeric)
+					if (!isNaN(Number(key))) {
+						allThoughts.push({
+							timestamp: key,
+							content: value,
+							thing: {
+								title: item.title,
+								slug: item.slug,
+								type: (item as any).type || filterType as ContentType, // Fallback if type wasn't merged
+								category: item.category,
+							},
+						});
+					}
+				}
+			}
+		}
+	}
+
+	// Sort by timestamp descending
+	return allThoughts.sort(
+		(a, b) => Number(b.timestamp) - Number(a.timestamp),
+	);
+}
+
+// takes a pre-filtered list of thoughts (used by individual pages)
+export function updateThoughts(thoughts: ThoughtItem[], thing: ContentItem) {
+	thing = JSON.parse(JSON.stringify(thing));
+	return thoughts.map((thought) => {
+		const timestamp = Object.keys(thought)[0];
+		// @ts-ignore
+		const content = thought[timestamp];
+		return { timestamp, content, thing };
+	});
+}

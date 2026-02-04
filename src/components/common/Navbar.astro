@@ -22,7 +22,8 @@ if (isDev) {
 <nav class="navbar" role="navigation" aria-label="main navigation">
 	<div class="navbar-brand mt-4-desktop pt-4 mb-2 ml-2">
 		<a class="navbar-item" href='/'>
-			<h1 class="is-size-3 is-size-5-mobile tertiary-color f-normal">
+			<h1 class="is-size-3 is-size-5-mobile tertiary-color is-flex is-align-items-center f-normal">
+				<img src="/favicon.png" class="mr-2" style="border-radius: 15%;" alt="Logo" />
 				parsehex
 			</h1>
 		</a>
@@ -117,5 +118,15 @@ if (isDev) {
 		.navbar-item {
 			margin-top: 0 !important;
 		}
+	}
+
+	@media (max-width: 768px) {
+		h1 img {
+			margin-bottom: 0.5rem;
+		}
+	}
+
+	nav {
+		box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.1);
 	}
 </style>

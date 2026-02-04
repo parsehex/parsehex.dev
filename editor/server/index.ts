@@ -131,10 +131,11 @@ export default function editorBackend() {
 							return sendError(409, "File already exists");
 						} catch { }
 
+						console.log(tags);
 						const frontmatter = {
 							title,
 							created: Math.floor(Date.now() / 1000),
-							tags: tags ? tags.split(',').map((t: string) => t.trim()) : undefined,
+							tags: tags ? tags : undefined,
 							...other
 						};
 						const doc = new yaml.Document(frontmatter);
