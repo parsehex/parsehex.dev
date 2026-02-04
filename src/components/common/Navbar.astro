@@ -56,7 +56,7 @@ if (isDev) {
 				<span class="is-size-7 has-text-grey f-600 mb-0 is-unselectable is-uppercase" style="line-height: 1;"
 					>What I Like</span
 				>
-				<div class="is-flex">
+				<div class="is-flex things-list" style="flex-wrap: wrap;">
 					{
 						availTypes.map((option) => {
 							return (
@@ -144,5 +144,9 @@ if (isDev) {
 
 	nav {
 		box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.1);
+	}
+
+	.things-list {
+		max-width: 19rem;
 	}
 </style>

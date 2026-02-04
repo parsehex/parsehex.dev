@@ -46,6 +46,9 @@ function formatDate(timestamp?: number): string {
 const thoughts = updateThoughts(thing.data.thoughts, thing);
 
 const hasSidebarContent = thing.data.url || (thing.data.references && thing.data.references.length > 0);
+
+// TODO: support mdx pages having layout option overrides
+//   e.g. noSidebar, noThoughts, similar, etc.
 ---
 
 <BaseLayout pageTitle={thing.data.title} pageDescription={thing.data.summary}>
@@ -105,7 +108,7 @@ const hasSidebarContent = thing.data.url || (thing.data.references && thing.data
                         <section style="padding-bottom: 2rem;">
                             <div class="container">
                                 <h3 class="title is-5 mb-3">Latest Thinks</h3>
-                                <ThoughtsFeed thoughts={thoughts} limit={10} />
+                                <ThoughtsFeed thoughts={thoughts as any} limit={10} />
                             </div>
                         </section>
                     )}
@@ -155,6 +158,8 @@ const hasSidebarContent = thing.data.url || (thing.data.references && thing.data
 		</div>
 	</section>
 </BaseLayout>
+
+<!-- TODO: client-side (floating?) table of contents, when content scrolls + has headings -->
 
 <style is:global>
 	pre {
