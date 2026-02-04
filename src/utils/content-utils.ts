@@ -151,7 +151,9 @@ export async function getContentItems(
 		}
 	}
 
-	return deduplicated;
+	return deduplicated.sort(
+		(a, b) => Number(b.created) - Number(a.created),
+	);
 }
 
 export function groupByCategory(
