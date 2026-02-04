@@ -4,8 +4,8 @@ import { render } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { collections } from '@/content.config';
 import ThingRef from '@/components/common/ThingRef.astro';
-import ThoughtsList from '@/components/common/ThoughtsList.astro';
 import ThoughtsFeed from '@/components/common/ThoughtsFeed.astro';
+// import FloatingTOC from '@/components/common/FloatingTOC.astro';
 import { updateThoughts } from '@/utils/content-utils';
 
 export async function getStaticPaths() {
@@ -157,9 +157,10 @@ const hasSidebarContent = thing.data.url || (thing.data.references && thing.data
 			</div>
 		</div>
 	</section>
-</BaseLayout>
 
-<!-- TODO: client-side (floating?) table of contents, when content scrolls + has headings -->
+    <!-- it's not there yet, kind of sucks -->
+	<!-- <FloatingTOC /> -->
+</BaseLayout>
 
 <style is:global>
 	pre {
