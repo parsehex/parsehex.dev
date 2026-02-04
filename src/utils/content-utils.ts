@@ -255,6 +255,7 @@ export async function getAllThoughts(
 // takes a pre-filtered list of thoughts (used by individual pages)
 export function updateThoughts(thoughts: ThoughtItem[], thing: ContentItem) {
 	thing = JSON.parse(JSON.stringify(thing));
+	thoughts = thoughts || [];
 	return thoughts.map((thought) => {
 		const timestamp = Object.keys(thought)[0];
 		// @ts-ignore
