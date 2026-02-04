@@ -24,9 +24,14 @@ export async function getStaticPaths() {
 	return paths.flat();
 }
 
-const { type } = Astro.params;
 const { thing } = Astro.props;
 const { Content } = await render(thing);
+const { type } = Astro.params;
+let subtype = '';
+if (thing.id.includes('/')) {
+    const parts = thing.id.split('/');
+    subtype = parts[0];
+}
 
 function formatDate(timestamp?: number): string {
 	if (!timestamp) return '';
@@ -39,6 +44,8 @@ function formatDate(timestamp?: number): string {
 }
 
 const thoughts = updateThoughts(thing.data.thoughts, thing);
+
+const hasSidebarContent = thing.data.url || (thing.data.references && thing.data.references.length > 0);
 ---
 
 <BaseLayout pageTitle={thing.data.title} pageDescription={thing.data.summary}>
@@ -46,6 +53,18 @@ const thoughts = updateThoughts(thing.data.thoughts, thing);
 	<section class="section">
 		<div class="container">
             <header class="thing-header">
+                {subtype && (
+                    <p class="breadcrumb-label">
+                        <a href={`/${type}`}>{type}</a>
+                        {subtype && (
+                            <>
+                                <span class="breadcrumb-separator">/</span>
+                                <a href={`/${type}/${subtype}`}>{subtype}</a>
+                            </>
+                        )}
+                    </p>
+                )}
+
                 <h2 class="title is-2">{thing.data.title}</h2>
                 <!-- TODO maybe: display other Things with the same (or fuzzy?) name ("See also"?) -->
 
@@ -79,7 +98,7 @@ const thoughts = updateThoughts(thing.data.thoughts, thing);
                 </div>
             </header>
 
-			<div class="content-layout">
+			<div class:list={["content-layout", { "has-sidebar": hasSidebarContent }]}>
 				<!-- Main Content Column -->
                 <div class="main-column">
                     {thing.data.thoughts && thing.data.thoughts.length > 0 && (
@@ -92,7 +111,7 @@ const thoughts = updateThoughts(thing.data.thoughts, thing);
                     )}
 
                     <!-- MDX Content -->
-                    <div class="mdx-content">
+                    <div class="mdx-content content">
                         <Content />
                     </div>
 
@@ -107,29 +126,31 @@ const thoughts = updateThoughts(thing.data.thoughts, thing);
                 </div>
 
                 <!-- Sidebar Column -->
-                <aside class="sidebar-column">
-                    {thing.data.url && (
-                        <div class="sidebar-block">
-                            <a href={thing.data.url} target="_blank" rel="noopener noreferrer" class="button is-primary is-outlined is-fullwidth">
-                                Go to {thing.data.title} →
-                            </a>
-                        </div>
-                    )}
+                {hasSidebarContent && (
+                    <aside class="sidebar-column">
+                        {thing.data.url && (
+                            <div class="sidebar-block">
+                                <a href={thing.data.url} target="_blank" rel="noopener noreferrer" class="button is-primary is-outlined is-fullwidth">
+                                    Go to {thing.data.title} →
+                                </a>
+                            </div>
+                        )}
 
-                    <!-- References -->
-                    {thing.data.references && thing.data.references.length > 0 && (
-                        <div class="sidebar-block">
-                            <h4 class="sidebar-title">References</h4>
-                            <ul class="references-list">
-                                {thing.data.references.map((ref: any) => (
-                                    <li class="reference-item">
-                                        <ThingRef ref={ref} />
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
-                </aside>
+                        <!-- References -->
+                        {thing.data.references && thing.data.references.length > 0 && (
+                            <div class="sidebar-block">
+                                <h4 class="sidebar-title">References</h4>
+                                <ul class="references-list">
+                                    {thing.data.references.map((ref: any) => (
+                                        <li class="reference-item">
+                                            <ThingRef ref={ref} />
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                    </aside>
+                )}
 			</div>
 		</div>
 	</section>
@@ -150,7 +171,37 @@ const thoughts = updateThoughts(thing.data.thoughts, thing);
 		margin-bottom: 1rem;
 		padding-bottom: 0.5rem;
 		border-bottom: 1px solid #eee;
+
 	}
+    .thing-header p {
+        cursor: default;
+    }
+
+    .breadcrumb-label {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        color: #999;
+    }
+
+    .breadcrumb-label a {
+        color: #666;
+        text-decoration: underline;
+        text-underline-offset: 0.15rem;
+        transition: color 0.2s ease;
+    }
+
+    .breadcrumb-label a:hover {
+        color: #333;
+        text-decoration: underline;
+    }
+
+    .breadcrumb-separator {
+        margin: 0 0.25rem;
+        opacity: 0.5;
+    }
 
     .metadata-bar {
         display: flex;
@@ -162,8 +213,12 @@ const thoughts = updateThoughts(thing.data.thoughts, thing);
 
     .content-layout {
         display: grid;
-        grid-template-columns: 1fr 300px;
+        grid-template-columns: 1fr;
         gap: 3rem;
+    }
+
+    .content-layout.has-sidebar {
+        grid-template-columns: 1fr 300px;
     }
 
     .main-column {

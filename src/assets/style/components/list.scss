@@ -1,11 +1,11 @@
 .content {
-  ul {
-    list-style: none;
-    margin-left: inherit;
-    margin-top: inherit;
-  }
+	ul {
+		list-style: disc;
+		margin-left: inherit;
+		margin-top: inherit;
+	}
 
-  li + li {
-    margin-top: auto;
-  }
+	li + li {
+		margin-top: auto;
+	}
 }
