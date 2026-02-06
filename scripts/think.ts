@@ -118,8 +118,11 @@ async function addThoughtToFile(contentType: string, slug: string, thoughtData: 
 	frontmatter.thoughts.push(thoughtData);
 
 	// Write back to file
-	const newFrontmatter = yaml.stringify(frontmatter, yamlCfg).trim();
-	const newContent = `---\n${newFrontmatter}\n---\n\n${body}`;
+	// const newFrontmatter = yaml.stringify(frontmatter, yamlCfg).trim();
+	const doc = new yaml.Document(frontmatter);
+	if (doc.get('tags')) (doc.get('tags') as any).flow = true;
+	const newFrontmatter = doc.toString(yamlCfg).trim();
+	const newContent = `---\n${newFrontmatter}\n---\n${body}`;
 
 	await fs.writeFile(filePath, newContent, { encoding: 'utf-8' });
 }
