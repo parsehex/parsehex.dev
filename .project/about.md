@@ -24,3 +24,7 @@ These are my thoughts as I figure out more of what I want to make:
 ## Hosting
 
 The plan is to have this hosted on Cloudflare, ideally keeping within the free tier.
+
+## Terminology
+
+I intentionally use weird wording, for example posts/entries are internally called Things, and they can have thoughts attached to them which are referred to as Thinks ("Latest Thinks" instead of "Recent Thoughts").
