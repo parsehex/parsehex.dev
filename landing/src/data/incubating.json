@@ -1,0 +1,41 @@
+[
+	{
+		"name": "ProjectDepot",
+		"status": "Foundations Laid",
+		"focus": "An umbrella for tools + info to help other project builders.",
+		"description": "SrcGallery precedes ProjectDepot and was the first project in this direction.\n\nProjectDepot is the larger vision for a set of tools and resources that make it easier to turn ideas into real projects.\n\nSrcGallery was after realizing that an up-to-date portfolio is annoying to maintain.",
+		"details": [],
+		"accent": "#14b8a6"
+	},
+	{
+		"name": "ProjectDepot - Starters",
+		"status": "Next Up",
+		"focus": "Reusable starter kits to get to a strong first version fast.",
+		"description": "This is my long-term aim to address the problems I've faced when starting (or trying to start) projects.",
+		"details": [
+			"Links to starter projects that I like or use + my own boilerplates based on my preferred stack(s).",
+			"Sharing my process for throwing up a project in order to tackle a vision."
+		],
+		"accent": "#f59e0b"
+	},
+	{
+		"name": "buddyGenAI",
+		"status": "To-Return",
+		"focus": "Making my buddy",
+		"description": "Ever since I could see the first 2-month prototype, I promoted bGAI to my Main/Best/Proudest project. I've put the project down by now though, which is a bummer.\n\nSo (one thing) I'm putting thought toward is making it mine -- a bit scary + vulnerable-feeling.",
+		"details": [
+			"Show and Tell: I made the thing, so it's up to me to guide others how it can be used.",
+			"Re-aligning Scope: In the pursuit of popularity and making the project more accessible to understand (lol as if), I began adding Cloud Providers, which I regret because it was a compromise on something I already decided.\nThe next iteration will only connect with privacy-preserving AI models."
+		],
+		"accent": "#f59e0b"
+	},
+	{
+		"name": "airbattle-hosting",
+		"status": "Part of the Rotation",
+		"focus": "My contribution to the AIRMASH community",
+		"description": "",
+		"details": [
+		],
+		"accent": "#0ea5e9"
+	}
+]
