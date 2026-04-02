@@ -1,0 +1,98 @@
+---
+const skillGroups = [
+	{
+		label: 'Languages',
+		skills: [
+			'TypeScript',
+			'JavaScript',
+			'PHP',
+			'HTML',
+			'CSS / SCSS',
+			'Python',
+			'SQL',
+		],
+	},
+	{
+		label: 'Frontend',
+		skills: ['Astro', 'Vue', 'React', 'Tailwind'],
+	},
+	{
+		label: 'Backend & Infra',
+		skills: ['Node.js', 'Electron', 'Cloudflare', 'DigitalOcean', 'Supabase'],
+	},
+	{
+		label: 'AI / ML',
+		skills: ['LLM APIs', 'KoboldCpp', 'WebLLM', 'Prompt Engineering'],
+	},
+	{
+		label: 'Tools',
+		skills: ['Git', 'GitHub Actions', 'VS Code', 'Wrangler'],
+	},
+];
+---
+
+<section id="skills">
+	<div class="container">
+		<span class="section-label">What I Work With</span>
+		<h2 class="section-title">Skills & Tools</h2>
+
+		<div class="skills-grid">
+			{
+				skillGroups.map((group) => (
+					<div class="skill-group">
+						<h3 class="skill-group-label">{group.label}</h3>
+						<div class="skill-items">
+							{group.skills.map((skill) => (
+								<span class="skill-item">{skill}</span>
+							))}
+						</div>
+					</div>
+				))
+			}
+		</div>
+	</div>
+</section>
+
+<style>
+	.skills-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+		gap: 1.5rem;
+	}
+	.skill-group {
+		padding: 1.25rem;
+		background: var(--bg-card);
+		border: 1px solid var(--border);
+		border-radius: var(--radius);
+		transition: border-color var(--transition);
+	}
+	.skill-group:hover {
+		border-color: var(--border-hover);
+	}
+	.skill-group-label {
+		font-family: var(--font-mono);
+		font-size: 0.72rem;
+		font-weight: 500;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--accent-light);
+		margin-bottom: 0.75rem;
+	}
+	.skill-items {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+	}
+	.skill-item {
+		font-size: 0.85rem;
+		color: var(--text-secondary);
+		padding: 0.2rem 0.55rem;
+		background: rgba(255, 255, 255, 0.03);
+		border-radius: var(--radius-sm);
+		border: 1px solid rgba(255, 255, 255, 0.04);
+		transition: color var(--transition);
+	}
+	.skill-group:hover .skill-item {
+		color: var(--text-primary);
+	}
+</style>

@@ -1,0 +1,128 @@
+---
+import experience from '../data/experience.json';
+---
+
+<section id="experience">
+	<div class="container">
+		<span class="section-label">Where I've Worked</span>
+		<h2 class="section-title">Experience</h2>
+
+		<div class="timeline">
+			{
+				experience.map((job: any, i: number) => (
+					<div class="timeline-item">
+						<div class="timeline-marker" />
+						<div class="card timeline-card">
+							<div class="job-header">
+								<div>
+									<h3 class="job-title">{job.title}</h3>
+									<span class="job-company">{job.company}</span>
+								</div>
+								<span class="job-period">{job.period}</span>
+							</div>
+							<p class="job-desc">{job.description}</p>
+						</div>
+					</div>
+				))
+			}
+		</div>
+
+		<p class="experience-note">
+			<em
+				>Update this section with your real work history in <code
+					>src/data/experience.json</code
+				>.</em
+			>
+		</p>
+	</div>
+</section>
+
+<style>
+	.timeline {
+		position: relative;
+		padding-left: 2rem;
+	}
+	.timeline::before {
+		content: '';
+		position: absolute;
+		left: 7px;
+		top: 8px;
+		bottom: 8px;
+		width: 2px;
+		background: linear-gradient(to bottom, var(--accent), transparent);
+		border-radius: 1px;
+	}
+	.timeline-item {
+		position: relative;
+		margin-bottom: 1.25rem;
+	}
+	.timeline-item:last-child {
+		margin-bottom: 0;
+	}
+	.timeline-marker {
+		position: absolute;
+		left: -2rem;
+		top: 1.75rem;
+		width: 16px;
+		height: 16px;
+		border-radius: 50%;
+		background: var(--bg-primary);
+		border: 2px solid var(--accent);
+		z-index: 1;
+		transform: translateX(calc(-50% + 8px));
+	}
+	.timeline-item:first-child .timeline-marker {
+		background: var(--accent);
+		box-shadow: 0 0 12px var(--accent-glow);
+	}
+	.timeline-card {
+		margin-left: 0.5rem;
+	}
+	.job-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		gap: 1rem;
+		margin-bottom: 0.5rem;
+	}
+	.job-title {
+		font-size: 1.05rem;
+		font-weight: 600;
+		letter-spacing: -0.01em;
+	}
+	.job-company {
+		font-size: 0.9rem;
+		color: var(--accent-light);
+	}
+	.job-period {
+		font-family: var(--font-mono);
+		font-size: 0.78rem;
+		color: var(--text-muted);
+		white-space: nowrap;
+		flex-shrink: 0;
+	}
+	.job-desc {
+		font-size: 0.9rem;
+		color: var(--text-secondary);
+		line-height: 1.65;
+	}
+	.experience-note {
+		margin-top: 1.5rem;
+		font-size: 0.82rem;
+		color: var(--text-muted);
+	}
+	.experience-note code {
+		font-family: var(--font-mono);
+		font-size: 0.78rem;
+		background: var(--bg-card);
+		padding: 0.15rem 0.4rem;
+		border-radius: 4px;
+	}
+
+	@media (max-width: 640px) {
+		.job-header {
+			flex-direction: column;
+			gap: 0.25rem;
+		}
+	}
+</style>

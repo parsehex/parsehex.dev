@@ -1,0 +1,80 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer id="footer">
+	<div class="container">
+		<div class="footer-inner">
+			<div class="footer-left">
+				<span class="footer-name"
+					>Thomas <span class="footer-handle">/ parsehex</span></span
+				>
+				<p class="footer-tagline">
+					Mistake-maker + Improv-style programmer since 2010
+				</p>
+			</div>
+			<div class="footer-links">
+				<a
+					href="https://github.com/parsehex"
+					target="_blank"
+					rel="noopener noreferrer">GitHub</a
+				>
+				<a href="https://mespace.parsehex.dev">Mespace</a>
+			</div>
+		</div>
+		<div class="footer-bottom">
+			<span>&copy; {year}</span>
+		</div>
+	</div>
+</footer>
+
+<style>
+	footer {
+		padding: 3rem 0 1.5rem;
+		margin-top: 2rem;
+		border-top: 1px solid var(--border);
+	}
+	.footer-inner {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		gap: 2rem;
+		margin-bottom: 2rem;
+	}
+	.footer-name {
+		font-size: 1rem;
+		font-weight: 600;
+	}
+	.footer-handle {
+		color: var(--text-muted);
+		font-weight: 400;
+	}
+	.footer-tagline {
+		font-size: 0.85rem;
+		color: var(--text-muted);
+		margin-top: 0.3rem;
+	}
+	.footer-links {
+		display: flex;
+		gap: 1.25rem;
+	}
+	.footer-links a {
+		font-size: 0.9rem;
+		color: var(--text-secondary);
+		transition: color var(--transition);
+	}
+	.footer-links a:hover {
+		color: var(--text-primary);
+	}
+	.footer-bottom {
+		font-size: 0.78rem;
+		color: var(--text-muted);
+	}
+
+	@media (max-width: 640px) {
+		.footer-inner {
+			flex-direction: column;
+			gap: 1.25rem;
+		}
+	}
+</style>

@@ -1,0 +1,44 @@
+---
+import { SEO } from 'astro-seo';
+import '../assets/styles/global.css';
+
+export interface Props {
+	title?: string;
+	description?: string;
+}
+
+const {
+	title = 'Thomas — parsehex',
+	description = 'Web developer, weird project maker, AI tinkerer',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<SEO
+			title={title}
+			description={description}
+			extend={{
+				link: [{ rel: 'icon', href: '/favicon.png' }],
+				meta: [
+					{ name: 'viewport', content: 'width=device-width, initial-scale=1' },
+				],
+			}}
+			openGraph={{
+				basic: {
+					title: title,
+					type: 'website',
+					image: '',
+				},
+				optional: {
+					description: description,
+				},
+			}}
+		/>
+	</head>
+	<body>
+		<slot />
+	</body>
+</html>

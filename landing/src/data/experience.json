@@ -1,0 +1,14 @@
+[
+	{
+		"title": "Your Job Title",
+		"company": "Company Name",
+		"period": "2024 – Present",
+		"description": "Brief description of what you do here."
+	},
+	{
+		"title": "Previous Role",
+		"company": "Previous Company",
+		"period": "2022 – 2024",
+		"description": "Brief description of what you did."
+	}
+]

@@ -14,7 +14,9 @@
     "now:mac": "node --print \"Date.now()\" | tr -d '[:space:]' | pbcopy",
     "now:win": "node --print \"Date.now()\" | % { $_.Trim() } | clip",
     "editor": "cd editor && npm run dev",
-    "cms": "concurrently npm:dev npm:editor"
+    "cms": "concurrently npm:dev npm:editor",
+    "landing:dev": "cd landing && npm run dev",
+    "landing:build": "cd landing && npm run build"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.13",

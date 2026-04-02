@@ -1,0 +1,38 @@
+[
+	{
+		"name": "buddyGenAI",
+		"tagline": "Everyone needs a buddy",
+		"description": "An app for creating and chatting with AI companions. Name them, describe their personality, generate profile pictures, hear them talk back — it's built around making AI feel less like a tool and more like something you'd actually want to hang out with. Runs locally, privately, or connect to cloud providers.",
+		"url": "https://buddygenai.com/",
+		"repo": "https://github.com/parsehex/buddyGenAI",
+		"tech": ["TypeScript", "Vue", "Electron", "KoboldCpp", "WebLLM"],
+		"accent": "#6366f1"
+	},
+	{
+		"name": "SrcGallery",
+		"tagline": "Your GitHub portfolio, on autopilot",
+		"description": "A forkable portfolio generator that pulls your projects straight from GitHub and keeps itself updated. Portfolios are a pain to maintain — so why not let your existing GitHub profile do the work? Fork the repo, deploy, done.",
+		"url": "https://projectdepot.github.io/SrcGallery/",
+		"repo": "https://github.com/ProjectDepot/SrcGallery",
+		"tech": ["Astro", "Vue", "TypeScript", "GitHub Actions"],
+		"accent": "#10b981"
+	},
+	{
+		"name": "Daily False Facts",
+		"tagline": "False facts posted daily (usually)",
+		"description": "A joke website I originally made around 2012 and rebuilt from the ground up in 2025. It has over 1,000 false facts from the original run, now drip-fed out alongside new ones. It's pointless, and that's the point.",
+		"url": "https://dailyfalsefacts.com/",
+		"repo": "https://github.com/parsehex/dailyfalsefacts",
+		"tech": ["Astro", "React", "Cloudflare Pages"],
+		"accent": "#ef4444"
+	},
+	{
+		"name": "aAI-Art",
+		"tagline": "Generative AI art, the weird way",
+		"description": "What if instead of generating images with AI, you asked it to describe shapes — and then drew those? This app prompts LLMs to output JSON sprite instructions, which get rendered on a canvas. It's an odd approach to AI art that sidesteps the typical image generation pipeline entirely.",
+		"url": "https://parsehex.github.io/aAI-Art/",
+		"repo": "https://github.com/parsehex/aAI-Art",
+		"tech": ["TypeScript", "Konva", "LLM APIs"],
+		"accent": "#f59e0b"
+	}
+]
