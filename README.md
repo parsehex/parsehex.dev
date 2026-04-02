@@ -1,6 +1,10 @@
-# parsehex.dev
+# parsehex.dev / mespace
 
 This is the repo for my personal website, <https://parsehex.dev/>. It was initialized using the [Astro Minimal](https://github.com/DomeT99/astro-minimal) template created by [Domenico Tenace / DomeT99](https://github.com/DomeT99) -- if you need an Astro starter/boilerplate, [that's](https://github.com/DomeT99/astro-minimal) a good start.
+
+This project includes the landing page/site as well as the repo's original purpose which is **mespace**: my rejection of social media as a method of sharing my life.
+
+> The rest of this `README` needs updated.
 
 ## Living Project
 
