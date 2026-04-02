@@ -14,7 +14,7 @@
 		"description": "This is my long-term aim to address the problems I've faced when starting (or trying to start) projects.",
 		"details": [
 			"Links to starter projects that I like or use + my own boilerplates based on my preferred stack(s).",
-			"Sharing my process for throwing up a project in order to tackle a vision."
+			"Sharing my process for throwing up a project in order to tackle a vision.\nHint: AI is very (but only mostly) helpful."
 		],
 		"accent": "#f59e0b"
 	},
@@ -22,7 +22,7 @@
 		"name": "buddyGenAI",
 		"status": "To-Return",
 		"focus": "Making my buddy",
-		"description": "Ever since I could see the first 2-month prototype, I promoted bGAI to my Main/Best/Proudest project. I've put the project down by now though, which is a bummer.\n\nSo (one thing) I'm putting thought toward is making it mine -- a bit scary + vulnerable-feeling.",
+		"description": "Ever since I could see the first 2-month prototype, I promoted bGAI to my Main/Best/Proudest project. I've put the project down by now though, which is a bummer.\n\nSo (1 thing) I'm thinking toward is really making it my own -- a bit scary + vulnerable-feeling.",
 		"details": [
 			"Show and Tell: I made the thing, so it's up to me to guide others how it can be used.",
 			"Re-aligning Scope: In the pursuit of popularity and making the project more accessible to understand (lol as if), I began adding Cloud Providers, which I regret because it was a compromise on something I already decided.\nThe next iteration will only connect with privacy-preserving AI models."
