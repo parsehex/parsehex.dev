@@ -16,7 +16,8 @@
     "editor": "cd editor && npm run dev",
     "cms": "concurrently npm:dev npm:editor",
     "landing:dev": "cd landing && npm run dev",
-    "landing:build": "cd landing && npm run build"
+    "landing:build": "cd landing && npm run build",
+    "landing:deploy": "npm run landing:build && cd landing && npx wrangler deploy"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.13",
