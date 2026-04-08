@@ -11,6 +11,11 @@ const {
 	title = 'parsehex - Web Developer',
 	description = 'Weird project builder, AI tinkerer',
 } = Astro.props;
+
+const bannerImagePath = '/ph-banner-v2.png';
+const bannerImageUrl = Astro.site
+	? new URL(bannerImagePath, Astro.site).toString()
+	: bannerImagePath;
 ---
 
 <!doctype html>
@@ -24,13 +29,16 @@ const {
 				link: [{ rel: 'icon', href: '/favicon.png' }],
 				meta: [
 					{ name: 'viewport', content: 'width=device-width, initial-scale=1' },
+					{ property: 'og:image:alt', content: 'parsehex landing banner' },
+					{ name: 'twitter:card', content: 'summary_large_image' },
+					{ name: 'twitter:image', content: bannerImageUrl },
 				],
 			}}
 			openGraph={{
 				basic: {
 					title: title,
 					type: 'website',
-					image: '',
+					image: bannerImageUrl,
 				},
 				optional: {
 					description: description,
